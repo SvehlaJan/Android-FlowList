@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Gratitude Journal</string>
+    <string name="database">GratitudeJournal.db</string>
+    <string name="menu_journal">Journal</string>
+    <string name="menu_history">History</string>
+    <string name="menu_settings">Settings</string>
+</resources>
