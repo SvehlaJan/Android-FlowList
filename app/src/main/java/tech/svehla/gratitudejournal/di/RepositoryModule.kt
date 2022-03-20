@@ -5,10 +5,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import tech.svehla.gratitudejournal.network.ApiService
-import tech.svehla.gratitudejournal.network.FirestoreService
-import tech.svehla.gratitudejournal.persistence.JournalDao
-import tech.svehla.gratitudejournal.repository.MainRepository
+import tech.svehla.gratitudejournal.data.remote.ApiService
+import tech.svehla.gratitudejournal.data.remote.FirestoreService
+import tech.svehla.gratitudejournal.data.local.JournalDao
+import tech.svehla.gratitudejournal.data.repository.MainRepository
 
 @Module
 @InstallIn(ViewModelComponent::class)

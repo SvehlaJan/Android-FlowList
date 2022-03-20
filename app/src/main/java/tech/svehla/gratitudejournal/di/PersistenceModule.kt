@@ -2,13 +2,13 @@ package tech.svehla.gratitudejournal.di
 
 import android.app.Application
 import androidx.room.Room
-import tech.svehla.gratitudejournal.persistence.AppDatabase
+import tech.svehla.gratitudejournal.data.local.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import tech.svehla.gratitudejournal.R
-import tech.svehla.gratitudejournal.persistence.JournalDao
+import tech.svehla.gratitudejournal.data.local.JournalDao
 import javax.inject.Singleton
 
 @Module

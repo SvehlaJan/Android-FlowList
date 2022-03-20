@@ -9,10 +9,10 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import tech.svehla.gratitudejournal.network.ApiService
-import tech.svehla.gratitudejournal.network.AuthService
-import tech.svehla.gratitudejournal.network.FirestoreService
-import tech.svehla.gratitudejournal.network.RequestInterceptor
+import tech.svehla.gratitudejournal.data.remote.ApiService
+import tech.svehla.gratitudejournal.data.remote.AuthService
+import tech.svehla.gratitudejournal.data.remote.FirestoreService
+import tech.svehla.gratitudejournal.data.remote.RequestInterceptor
 import javax.inject.Singleton
 
 @Module

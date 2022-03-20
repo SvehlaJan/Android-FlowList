@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.giphy.sdk.ui.Giphy
 import dagger.hilt.android.AndroidEntryPoint
-import tech.svehla.gratitudejournal.ui.main.MainScreen
-import tech.svehla.gratitudejournal.ui.theme.GratitudeJournalTheme
+import tech.svehla.gratitudejournal.presentation.main.MainScreen
+import tech.svehla.gratitudejournal.presentation.ui.theme.GratitudeJournalTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
