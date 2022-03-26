@@ -1,53 +1,14 @@
 package tech.svehla.gratitudejournal.data.remote
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.flow.Flow
 import tech.svehla.gratitudejournal.domain.model.User
 
-fun FirebaseUser.toUser(): User {
-    return User(
-        displayName,
-        email,
-        photoUrl.toString(),
-        uid
-    )
-}
+interface AuthService {
+    suspend fun signInWithGoogle(idToken: String)
 
-class AuthService {
-    private val firebaseAuth = FirebaseAuth.getInstance()
+    fun signOut()
 
-    private val _currentUserStateFlow = MutableStateFlow<FirebaseUser?>(null)
-//    private val _currentUserFlow = MutableSharedFlow<FirebaseUser?>(replay = 1)
+    val currentUserId: String
 
-    val currentUserFlow: Flow<User?> = _currentUserStateFlow.asStateFlow().map { it?.toUser() }
-
-    val currentUserId: String = firebaseAuth.currentUser?.uid ?: ""
-
-    val isLoggedInFlow: Flow<Boolean> = _currentUserStateFlow.asStateFlow().map { it != null }
-
-    init {
-        firebaseAuth.addAuthStateListener {
-            _currentUserStateFlow.tryEmit(it.currentUser)
-//            _currentUserFlow.tryEmit(it.currentUser)
-        }
-    }
-
-    suspend fun signInWithEmailAndPassword(email: String, password: String) {
-        firebaseAuth.signInWithEmailAndPassword(email, password).await()
-    }
-
-    suspend fun signUpWithEmailAndPassword(email: String, password: String) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-    }
-
-    suspend fun signInWithGoogle(idToken: String) {
-        firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null)).await()
-    }
-
-    fun signOut() {
-        firebaseAuth.signOut()
-    }
+    val currentUserFlow: Flow<User?>
 }

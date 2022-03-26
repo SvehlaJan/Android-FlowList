@@ -1,60 +1,48 @@
 package tech.svehla.gratitudejournal.presentation.detail
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
-import tech.svehla.gratitudejournal.data.repository.MainRepository
+import tech.svehla.gratitudejournal.common.Constants
 import tech.svehla.gratitudejournal.common.Resource
+import tech.svehla.gratitudejournal.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.domain.use_case.detail.GetDetailUseCase
+import tech.svehla.gratitudejournal.domain.use_case.detail.SaveEntryUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val mainRepository: MainRepository
+    private val getDetailUseCase: GetDetailUseCase,
+    private val saveEntryUseCase: SaveEntryUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val dateFlow = MutableSharedFlow<String>(replay = 1)
-    private val dateChannel = Channel<String?>()
-
-//    val journalEntry = dateChannel.receiveAsFlow()
-//        .filterNotNull()
-//        .mapLatest { date ->
-//            mainRepository.getJournalEntry(date)
-//        }
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(),
-//            initialValue = ""
-//        )
-
-    val journalEntry: Flow<Resource<JournalEntry>> = dateFlow.flatMapLatest {
-        mainRepository.getJournalEntry(it)
-    }
-//    val journalEntry = mainRepository.getJournalEntry("2020-01-01")
-
-    fun loadDetail(date: String) {
-        viewModelScope.launch {
-//            dateChannel.send(date)
-            dateFlow.emit(date)
+    init {
+        savedStateHandle.get<String>(Constants.PARAM_DATE)?.let { date ->
+            getDetail(date)
         }
+    }
+
+    private val _state: MutableState<Resource<JournalEntry>> = mutableStateOf(Resource.Loading())
+    val state: State<Resource<JournalEntry>> = _state
+
+    fun getDetail(date: String) {
+        getDetailUseCase(date).onEach {
+            _state.value = it
+        }.launchIn(viewModelScope)
     }
 
     fun saveEntry(newEntry: JournalEntry) {
         viewModelScope.launch {
-            mainRepository.saveJournalEntry(newEntry)
+            saveEntryUseCase(newEntry)
         }
     }
 
-    fun navigateBack() {
-//        viewModelScope.launch {
-//            dateFlow.emit("")
-//        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-    }
 }

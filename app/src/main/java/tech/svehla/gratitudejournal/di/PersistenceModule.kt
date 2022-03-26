@@ -31,6 +31,6 @@ object PersistenceModule {
   @Provides
   @Singleton
   fun providePosterDao(appDatabase: AppDatabase): JournalDao {
-    return appDatabase.posterDao()
+    return appDatabase.journalDao()
   }
 }

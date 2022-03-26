@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.common.Resource
-import tech.svehla.gratitudejournal.common.Status
+import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.NumberPicker
@@ -26,29 +30,29 @@ fun DetailScreen(
     onBackPressed: () -> Unit
 ) {
     LaunchedEffect(key1 = date) {
-        viewModel.loadDetail(date)
+        viewModel.getDetail(date)
     }
 
-    val entry: Resource<JournalEntry> by viewModel.journalEntry.collectAsState(initial = Resource.loading())
+    val state: Resource<JournalEntry> by viewModel.state
 
-    when (entry.status) {
-        Status.SUCCESS -> {
+    when (state) {
+        is Resource.Success -> {
             DetailScreenContent(
-                entry = entry.data,
+                entry = state.data,
                 onSaveEntry = {
                     viewModel.saveEntry(it)
                     onBackPressed()
                 },
             )
         }
-        Status.LOADING -> {
+        is Resource.Loading -> {
             LoadingScreen()
         }
         else -> {
             ErrorScreen(
-                entry.error,
+                state.message,
                 retry = {
-                    viewModel.loadDetail(date)
+                    viewModel.getDetail(date)
                 }
             )
         }

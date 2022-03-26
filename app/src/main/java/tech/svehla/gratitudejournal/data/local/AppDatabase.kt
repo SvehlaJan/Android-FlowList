@@ -2,10 +2,10 @@ package tech.svehla.gratitudejournal.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.data.local.entity.JournalEntryEntity
 
-@Database(entities = [JournalEntry::class], version = 1, exportSchema = true)
+@Database(entities = [JournalEntryEntity::class], version = 2, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
 
-  abstract fun posterDao(): JournalDao
+  abstract fun journalDao(): JournalDao
 }

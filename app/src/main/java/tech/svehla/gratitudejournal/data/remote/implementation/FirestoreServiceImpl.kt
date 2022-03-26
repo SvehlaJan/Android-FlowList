@@ -1,4 +1,4 @@
-package tech.svehla.gratitudejournal.data.remote
+package tech.svehla.gratitudejournal.data.remote.implementation
 
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -7,12 +7,17 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.tasks.await
-import tech.svehla.gratitudejournal.domain.model.FirestoreJournalEntry
+import tech.svehla.gratitudejournal.data.remote.ApiService
+import tech.svehla.gratitudejournal.data.remote.AuthService
+import tech.svehla.gratitudejournal.data.remote.dto.JournalEntryDto
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
-import tech.svehla.gratitudejournal.domain.model.toFirestoreJournalEntry
-import tech.svehla.gratitudejournal.domain.model.toJournalEntry
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -75,26 +80,33 @@ private fun Query.paginate(lastVisibleItem: Flow<Int>): Flow<List<DocumentSnapsh
     }
 }
 
-class FirestoreService @Inject constructor(private val authService: AuthService) {
+class FirestoreServiceImpl @Inject constructor(private val authService: AuthService) : ApiService {
     private val db = Firebase.firestore
 
-    suspend fun fetchJournalEntries(): List<JournalEntry> {
+    override suspend fun fetchJournalEntries(): List<JournalEntryDto> {
         return db.collection("users").document(authService.currentUserId).collection("flow_notes")
             .get()
             .await()
             .documents
             .map {
                 Timber.d("Journal entry: ${it.id}")
-                it.toObject(FirestoreJournalEntry::class.java)!!.toJournalEntry()
+                it.toObject(JournalEntryDto::class.java)!!
             }
     }
 
-    suspend fun fetchJournalEntry(date: String): JournalEntry? {
+    override suspend fun fetchJournalEntry(date: String): JournalEntryDto? {
         return db.collection("users").document(authService.currentUserId).collection("flow_notes")
             .document(date)
             .get()
             .await()
-            .toObject(FirestoreJournalEntry::class.java)?.toJournalEntry()
+            .toObject(JournalEntryDto::class.java)
+    }
+
+    override suspend fun saveJournalEntry(entry: JournalEntryDto) {
+        db.collection("users").document(authService.currentUserId).collection("flow_notes")
+            .document(entry.date)
+            .set(entry)
+            .await()
     }
 
     fun fetchJournalEntriesAsFlow(): Flow<List<JournalEntry>> {
@@ -114,14 +126,6 @@ class FirestoreService @Inject constructor(private val authService: AuthService)
             .map {
                 it.toObject(JournalEntry::class.java)!!
             }
-    }
-
-    suspend fun saveJournalEntry(entry: JournalEntry) {
-        val firebaseEntry = entry.toFirestoreJournalEntry()
-        db.collection("users").document(authService.currentUserId).collection("flow_notes")
-            .document(firebaseEntry.date)
-            .set(firebaseEntry)
-            .await()
     }
 
 //    fun getJournalEntries() = flow {

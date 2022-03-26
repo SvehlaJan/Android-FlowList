@@ -1,13 +1,11 @@
 package tech.svehla.gratitudejournal.data.remote
 
-import retrofit2.http.GET
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.data.remote.dto.JournalEntryDto
 
 interface ApiService {
+    suspend fun fetchJournalEntries(): List<JournalEntryDto>
 
-  @GET("DisneyPosters2.json")
-  suspend fun fetchJournalEntries(): List<JournalEntry>
+    suspend fun fetchJournalEntry(date: String): JournalEntryDto?
 
-  @GET("DisneyPosters2.json")
-  suspend fun fetchJournalEntry(entryDate: String): JournalEntry
+    suspend fun saveJournalEntry(entry: JournalEntryDto)
 }

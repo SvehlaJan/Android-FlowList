@@ -1,4 +1,4 @@
-package tech.svehla.gratitudejournal.data.remote
+package tech.svehla.gratitudejournal.data.remote.util
 
 import okhttp3.Interceptor
 import okhttp3.Response

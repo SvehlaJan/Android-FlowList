@@ -3,12 +3,19 @@ package tech.svehla.gratitudejournal.presentation.main
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,13 +23,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.*
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import tech.svehla.gratitudejournal.R
 import tech.svehla.gratitudejournal.presentation.detail.DetailScreen
 import tech.svehla.gratitudejournal.presentation.history.HistoryScreen
@@ -40,6 +51,20 @@ fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val scaffoldState = rememberScaffoldState()
+
+    // TODO
+//    LaunchedEffect(key1 = true) {
+//        viewModel.eventFlow.collectLatest { event ->
+//            when(event) {
+//                is WordInfoViewModel.UIEvent.ShowSnackbar -> {
+//                    scaffoldState.snackbarHostState.showSnackbar(
+//                        message = event.message
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     Scaffold(
 //        topBar = {

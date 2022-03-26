@@ -4,28 +4,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import tech.svehla.gratitudejournal.data.remote.AuthService
+import tech.svehla.gratitudejournal.domain.use_case.settings.CurrentUserUseCase
+import tech.svehla.gratitudejournal.domain.use_case.settings.SignInWithGoogleUseCase
+import tech.svehla.gratitudejournal.domain.use_case.settings.SignOutUseCase
 import javax.inject.Inject
 
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val authService: AuthService
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
+    private val signOutUseCase: SignOutUseCase,
+    currentUserUseCase: CurrentUserUseCase
 ) : ViewModel() {
 
-    val currentUser = authService.currentUserFlow
-
-    val userLoggedIn = authService.isLoggedInFlow
+    val currentUser = currentUserUseCase()
 
     fun signInWithGoogle(idToken: String) {
         viewModelScope.launch {
-            authService.signInWithGoogle(idToken)
+            signInWithGoogleUseCase(idToken)
         }
     }
 
     fun signOut() {
-        viewModelScope.launch {
-            authService.signOut()
-        }
+        signOutUseCase()
     }
 }

@@ -11,8 +11,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tech.svehla.gratitudejournal.data.remote.ApiService
 import tech.svehla.gratitudejournal.data.remote.AuthService
-import tech.svehla.gratitudejournal.data.remote.FirestoreService
-import tech.svehla.gratitudejournal.data.remote.RequestInterceptor
+import tech.svehla.gratitudejournal.data.remote.implementation.AuthServiceImpl
+import tech.svehla.gratitudejournal.data.remote.implementation.FirestoreServiceImpl
+import tech.svehla.gratitudejournal.data.remote.util.RequestInterceptor
 import javax.inject.Singleton
 
 @Module
@@ -39,21 +40,21 @@ object NetworkModule {
       .build()
   }
 
-  @Provides
-  @Singleton
-  fun provideApiService(retrofit: Retrofit): ApiService {
-    return retrofit.create(ApiService::class.java)
-  }
+//  @Provides
+//  @Singleton
+//  fun provideApiService(retrofit: Retrofit): ApiService {
+//    return retrofit.create(ApiService::class.java)
+//  }
 
   @Provides
   @Singleton
-  fun provideFirestoreService(authService: AuthService): FirestoreService {
-    return FirestoreService(authService)
+  fun provideFirestoreService(authService: AuthService): ApiService {
+    return FirestoreServiceImpl(authService)
   }
 
   @Provides
   @Singleton
   fun provideAuthService(): AuthService {
-    return AuthService()
+    return AuthServiceImpl()
   }
 }

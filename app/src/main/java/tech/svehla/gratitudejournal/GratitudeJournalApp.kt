@@ -3,7 +3,7 @@ package tech.svehla.gratitudejournal
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import tech.svehla.gratitudejournal.common.util.CrashReportingTree
-import timber.log.Timber.*
+import timber.log.Timber.DebugTree
 import timber.log.Timber.Forest.plant
 
 @HiltAndroidApp

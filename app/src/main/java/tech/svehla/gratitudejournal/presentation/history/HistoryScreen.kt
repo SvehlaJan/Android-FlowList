@@ -12,13 +12,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.common.Resource
-import tech.svehla.gratitudejournal.common.Status
+import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import java.time.LocalDate
@@ -29,12 +27,12 @@ fun HistoryScreen(
     selectEntry: (String) -> Unit
 ) {
 
-    val entries: Resource<List<JournalEntry>> by viewModel.journalEntries.collectAsState(initial = Resource.loading())
+    val state: Resource<List<JournalEntry>> by viewModel.state
     val listState = rememberLazyListState()
 
-    when (entries.status) {
-        Status.SUCCESS -> {
-            val items = entries.data!!
+    when (state) {
+        is Resource.Success -> {
+            val items = state.data!!
             if (items.isEmpty()) {
                 HistoryEmptyScreen(
                     selectEntry = selectEntry
@@ -47,11 +45,11 @@ fun HistoryScreen(
                 )
             }
         }
-        Status.LOADING -> {
+        is Resource.Loading -> {
             LoadingScreen()
         }
-        Status.ERROR -> {
-            ErrorScreen(error = entries.error, retry = { viewModel.refresh() })
+        else -> {
+            ErrorScreen(message = state.message, retry = { viewModel.refresh() })
         }
     }
 }
