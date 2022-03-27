@@ -4,35 +4,33 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import tech.svehla.gratitudejournal.data.remote.AuthService
+import tech.svehla.gratitudejournal.data.remote.dto.toUser
 import tech.svehla.gratitudejournal.domain.model.User
+import timber.log.Timber
 
-fun FirebaseUser.toUser(): User {
-    return User(
-        displayName,
-        email,
-        photoUrl.toString(),
-        uid
-    )
-}
 
 class AuthServiceImpl: AuthService {
     private val firebaseAuth = FirebaseAuth.getInstance()
 
     private val _currentUserStateFlow = MutableStateFlow<FirebaseUser?>(null)
-
     override val currentUserFlow: Flow<User?> = _currentUserStateFlow.asStateFlow().map { it?.toUser() }
 
-    override val currentUserId: String = firebaseAuth.currentUser?.uid ?: ""
+    private val _userChangedSharedFlow = MutableSharedFlow<Unit>(replay = 0)
+    override val userChangedFlow: SharedFlow<Unit> = _userChangedSharedFlow
+
+    override val currentUserId: String?
+        get() = firebaseAuth.currentUser?.uid
 
     init {
         firebaseAuth.addAuthStateListener {
             _currentUserStateFlow.tryEmit(it.currentUser)
-//            _currentUserFlow.tryEmit(it.currentUser)
         }
     }
 
@@ -44,11 +42,20 @@ class AuthServiceImpl: AuthService {
         firebaseAuth.createUserWithEmailAndPassword(email, password).await()
     }
 
-    override suspend fun signInWithGoogle(idToken: String) {
-        firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null)).await()
+    override suspend fun signInAnonymously() {
+        firebaseAuth.signInAnonymously().await()
+        _userChangedSharedFlow.emit(Unit)
     }
 
-    override fun signOut() {
+    override suspend fun signInWithGoogle(idToken: String) {
+        firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null)).await()
+        val currentUserId: String? = firebaseAuth.currentUser?.uid
+        _userChangedSharedFlow.emit(Unit)
+    }
+
+    override suspend fun signOut() {
         firebaseAuth.signOut()
+        val currentUserId: String? = firebaseAuth.currentUser?.uid
+        _userChangedSharedFlow.emit(Unit)
     }
 }

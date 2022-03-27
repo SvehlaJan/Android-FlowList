@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetDetailUseCase @Inject constructor(
     private val mainRepository: MainRepository
 ) {
+    val refreshRequired: Flow<Unit> = mainRepository.refreshRequiredSharedFlow
 
     operator fun invoke(date: String): Flow<Resource<JournalEntry>> {
         return mainRepository.getJournalEntry(date)

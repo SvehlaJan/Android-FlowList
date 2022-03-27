@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetHistoryUseCase @Inject constructor(
     private val mainRepository: MainRepository
 ) {
+    val refreshRequired: Flow<Unit> = mainRepository.refreshRequiredSharedFlow
 
     operator fun invoke(): Flow<Resource<List<JournalEntry>>> {
         return mainRepository.getJournalEntries()

@@ -3,23 +3,25 @@ package tech.svehla.gratitudejournal.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
-import tech.svehla.gratitudejournal.data.remote.ApiService
+import dagger.hilt.components.SingletonComponent
 import tech.svehla.gratitudejournal.data.local.JournalDao
+import tech.svehla.gratitudejournal.data.remote.ApiService
+import tech.svehla.gratitudejournal.data.remote.AuthService
 import tech.svehla.gratitudejournal.data.repository.MainRepositoryImpl
 import tech.svehla.gratitudejournal.domain.repository.MainRepository
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
   @Provides
-  @ViewModelScoped
+  @Singleton
   fun provideMainRepository(
     journalDao: JournalDao,
-    apiService: ApiService
+    apiService: ApiService,
+    authService: AuthService
   ): MainRepository {
-    return MainRepositoryImpl(journalDao, apiService)
+    return MainRepositoryImpl(journalDao, apiService, authService)
   }
 }

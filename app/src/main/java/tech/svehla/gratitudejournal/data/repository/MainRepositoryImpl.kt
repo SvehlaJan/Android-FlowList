@@ -1,25 +1,40 @@
 package tech.svehla.gratitudejournal.data.repository
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.data.remote.ApiService
 import tech.svehla.gratitudejournal.data.local.JournalDao
+import tech.svehla.gratitudejournal.data.remote.AuthService
 import tech.svehla.gratitudejournal.data.remote.dto.toJournalEntryDto
 import tech.svehla.gratitudejournal.domain.repository.MainRepository
 import timber.log.Timber
 import java.io.IOException
+import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     private val journalDao: JournalDao,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val authService: AuthService
 ) : MainRepository {
+
+    private val _refreshRequiredSharedFlow = MutableSharedFlow<Unit>(replay = 0)
+    override val refreshRequiredSharedFlow: SharedFlow<Unit> = _refreshRequiredSharedFlow
 
     init {
         Timber.d("Injection MainRepository")
+        GlobalScope.launch(Dispatchers.IO) {
+            authService.userChangedFlow.collect {
+                Timber.d("Current user changed")
+                _refreshRequiredSharedFlow.emit(Unit)
+            }
+        }
     }
 
     override fun getJournalEntries(): Flow<Resource<List<JournalEntry>>> = flow {
@@ -47,8 +62,8 @@ class MainRepositoryImpl @Inject constructor(
             )
         }
 
-        val newWordInfos = journalDao.getJournalEntries().map { it.toJournalEntry() }
-        emit(Resource.Success(newWordInfos))
+        val newJournalEntries = journalDao.getJournalEntries().map { it.toJournalEntry() }
+        emit(Resource.Success(newJournalEntries))
     }.flowOn(Dispatchers.IO)
 
     override fun getJournalEntry(date: String): Flow<Resource<JournalEntry>> = flow {
@@ -101,7 +116,10 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun saveJournalEntry(entry: JournalEntry) {
         apiService.saveJournalEntry(entry.toJournalEntryDto())
-        // TODO - refresh the data
-        //  journalDao.insertJournalEntries(listOf(entry.toJournalEntryEntity()))
+        _refreshRequiredSharedFlow.emit(Unit)
+    }
+
+    override suspend fun clearDatabase() {
+        journalDao.deleteAll()
     }
 }

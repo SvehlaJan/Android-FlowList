@@ -92,7 +92,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion versions.composeVersion
+        kotlinCompilerExtensionVersion versions.kotlinCompilerExtensionVersion
     }
     packagingOptions {
         resources {
@@ -134,6 +134,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$versions.roomVersion"
 
     implementation "com.giphy.sdk:ui:$versions.giphyVersion"
+    implementation "io.coil-kt:coil-compose:$versions.coilVersion"
+    implementation "io.coil-kt:coil-gif:$versions.coilVersion"
 
     // hilt
     implementation "com.google.dagger:hilt-android:$versions.hiltVersion"

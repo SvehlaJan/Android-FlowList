@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -29,6 +31,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,25 +49,12 @@ val items = listOf(
     NavScreen.Settings
 )
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val scaffoldState = rememberScaffoldState()
-
-    // TODO
-//    LaunchedEffect(key1 = true) {
-//        viewModel.eventFlow.collectLatest { event ->
-//            when(event) {
-//                is WordInfoViewModel.UIEvent.ShowSnackbar -> {
-//                    scaffoldState.snackbarHostState.showSnackbar(
-//                        message = event.message
-//                    )
-//                }
-//            }
-//        }
-//    }
 
     Scaffold(
 //        topBar = {
@@ -135,7 +125,6 @@ fun AppBottomBar(
                         // on the back stack as users select items
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
-//                            inclusive = true
                         }
                         // Avoid multiple copies of the same destination when
                         // reselecting the same item
@@ -149,6 +138,7 @@ fun AppBottomBar(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -156,7 +146,7 @@ fun AppNavHost(
 ) {
     NavHost(
         navController,
-        startDestination = NavScreen.Detail.routeWithArgument,
+        startDestination = NavScreen.History.route,
         Modifier.padding(innerPadding)
     ) {
         composable(NavScreen.History.route) {

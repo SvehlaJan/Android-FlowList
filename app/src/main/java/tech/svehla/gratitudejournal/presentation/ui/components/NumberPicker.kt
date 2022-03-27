@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -46,12 +47,13 @@ import kotlin.math.roundToInt
  */
 @Composable
 fun NumberPicker(
-    state: MutableState<Int>,
+    initialValue: Int,
     modifier: Modifier = Modifier,
     range: IntRange? = null,
     textStyle: TextStyle = LocalTextStyle.current,
     onStateChanged: (Int) -> Unit = {},
 ) {
+    var state = remember { mutableStateOf(initialValue) }
     val coroutineScope = rememberCoroutineScope()
     val numbersColumnHeight = 36.dp
     val halvedNumbersColumnHeight = numbersColumnHeight / 2

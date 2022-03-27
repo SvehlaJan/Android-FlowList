@@ -12,10 +12,10 @@ data class JournalEntryEntity(
     val firstNote: String,
     val secondNote: String,
     val thirdNote: String,
-    val imageUrl: String,
-    val gifUrl: String,
-    val favoriteEntry: Int,
-    val dayScore: Int,
+    val imageUrl: String?,
+    val gifUrl: String?,
+    val favoriteEntry: Int?,
+    val dayScore: Int?,
     val lastModified: String
 ) {
     fun toJournalEntry() = JournalEntry(
