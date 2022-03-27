@@ -153,7 +153,11 @@ fun AppNavHost(
             HistoryScreen(
                 viewModel = hiltViewModel()
             ) {
-                navController.navigate("${NavScreen.Detail.route}/$it")
+                navController.navigate("${NavScreen.Detail.route}/$it") {
+//                    popUpTo(NavScreen.History.route) {
+//                        inclusive = true
+//                    }
+                }
             }
         }
         composable(

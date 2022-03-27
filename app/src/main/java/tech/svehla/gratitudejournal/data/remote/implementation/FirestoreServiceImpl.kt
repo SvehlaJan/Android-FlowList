@@ -37,8 +37,8 @@ class FirestoreServiceImpl @Inject constructor(private val authService: AuthServ
                 .toObject(JournalEntryDto::class.java)
         }
 
-    override suspend fun saveJournalEntry(entry: JournalEntryDto) {
-        val userId = authService.currentUserId ?: return
+    override suspend fun saveJournalEntry(entry: JournalEntryDto) = withContext(Dispatchers.IO) {
+        val userId = authService.currentUserId ?: return@withContext
         db.collection("users").document(userId).collection("flow_notes")
             .document(entry.date)
             .set(entry)

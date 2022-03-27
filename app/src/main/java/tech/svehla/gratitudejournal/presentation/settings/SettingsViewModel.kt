@@ -48,7 +48,6 @@ class SettingsViewModel @Inject constructor(
             } else {
                 account.idToken?.let {
                     signInWithGoogle(it)
-                    setSignInErrorMessage(null)
                 } ?: run {
                     setSignInErrorMessage("Google sign in failed - no token")
                 }
@@ -58,14 +57,16 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setSignInErrorMessage(message: String?) {
-        _state.value = _state.value.copy(signInErrorMessage = message, isLoading = false)
-    }
 
     private fun signInWithGoogle(idToken: String) {
         viewModelScope.launch {
             signInWithGoogleUseCase(idToken)
+            setSignInErrorMessage(null)
         }
+    }
+
+    private fun setSignInErrorMessage(message: String?) {
+        _state.value = _state.value.copy(signInErrorMessage = message, isLoading = false)
     }
 
     fun onSignInClicked() {

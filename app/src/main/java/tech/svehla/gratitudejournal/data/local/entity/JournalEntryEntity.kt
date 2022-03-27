@@ -31,8 +31,8 @@ data class JournalEntryEntity(
     )
 }
 
-fun JournalEntry.toJournalEntryEntity() =
-    JournalEntryEntity(
+fun JournalEntry.toJournalEntryEntity(): JournalEntryEntity {
+    return JournalEntryEntity(
         date,
         firstNote,
         secondNote,
@@ -43,3 +43,4 @@ fun JournalEntry.toJournalEntryEntity() =
         dayScore,
         lastModified
     )
+}

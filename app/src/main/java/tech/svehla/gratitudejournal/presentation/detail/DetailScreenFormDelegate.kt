@@ -38,21 +38,21 @@ class DetailScreenFormDelegateImpl @Inject constructor() : DetailScreenFormDeleg
         firstNote.value = entry.firstNote
         secondNote.value = entry.secondNote
         thirdNote.value = entry.thirdNote
+        imageUrl.value = entry.imageUrl
         gifUrl.value = entry.gifUrl
         dayScore.value = entry.dayScore
         favoriteEntry.value = entry.favoriteEntry
-        imageUrl.value = entry.imageUrl
     }
 
     override fun getNewEntry() = JournalEntry(
-        date.value,
-        firstNote.value,
-        secondNote.value,
-        thirdNote.value,
-        gifUrl.value,
-        imageUrl.value,
-        dayScore.value,
-        favoriteEntry.value,
+        date = date.value,
+        firstNote = firstNote.value,
+        secondNote = secondNote.value,
+        thirdNote = thirdNote.value,
+        imageUrl = imageUrl.value,
+        gifUrl = gifUrl.value,
+        dayScore = dayScore.value,
+        favoriteEntry = favoriteEntry.value,
         lastModified = LocalDate.now().toString()
     )
 

@@ -6,7 +6,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import tech.svehla.gratitudejournal.data.local.JournalDao
 import tech.svehla.gratitudejournal.data.remote.ApiService
-import tech.svehla.gratitudejournal.data.remote.AuthService
 import tech.svehla.gratitudejournal.data.repository.MainRepositoryImpl
 import tech.svehla.gratitudejournal.domain.repository.MainRepository
 import javax.inject.Singleton
@@ -19,9 +18,8 @@ object RepositoryModule {
   @Singleton
   fun provideMainRepository(
     journalDao: JournalDao,
-    apiService: ApiService,
-    authService: AuthService
+    apiService: ApiService
   ): MainRepository {
-    return MainRepositoryImpl(journalDao, apiService, authService)
+    return MainRepositoryImpl(journalDao, apiService)
   }
 }

@@ -14,6 +14,4 @@ interface AuthService {
     val currentUserId: String?
 
     val currentUserFlow: Flow<User?>
-
-    val userChangedFlow: Flow<Unit>
 }

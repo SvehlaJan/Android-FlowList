@@ -27,6 +27,7 @@ import tech.svehla.gratitudejournal.presentation.ui.theme.Shapes
  */
 @Composable
 fun SignInButton(
+    modifier: Modifier = Modifier,
     text: String,
     loadingText: String = "Signing in...",
     icon: Painter,
@@ -38,7 +39,7 @@ fun SignInButton(
     onClick: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.clickable(
+        modifier = modifier.clickable(
             enabled = !isLoading,
             onClick = onClick
         ),

@@ -16,6 +16,5 @@ sealed class UIState {
 }
 
 sealed class UIEvent(val id: String = UUID.randomUUID().toString()) {
-    object ShowSignInBottomSheet : UIEvent()
     object NavigateBack : UIEvent()
 }

@@ -7,7 +7,6 @@ import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
 
 interface MainRepository {
-    val refreshRequiredSharedFlow: SharedFlow<Unit>
     fun getJournalEntries(): Flow<Resource<List<JournalEntry>>>
     fun getJournalEntry(date: String): Flow<Resource<JournalEntry>>
 

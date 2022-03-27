@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -36,33 +38,83 @@ fun SettingsScreen(
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (state.currentUser != null) {
-            Text(
-                text = "Logged in as ${state.currentUser!!.email}",
-                style = MaterialTheme.typography.h6
-            )
-            Button(modifier = Modifier.fillMaxWidth(), onClick = {
-                viewModel.signOut()
-            }) {
-                Text(text = "Sign out")
-            }
-        } else {
-            SignInButton(
-                text = "Sign in with Google",
-                loadingText = "Signing in...",
-                isLoading = state.isLoading,
-                icon = painterResource(id = R.drawable.ic_google_logo),
-                onClick = {
-                    viewModel.onSignInClicked()
-                    authResultLauncher.launch(signInRequestCode)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            elevation = 10.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                if (state.currentUser != null) {
+                    Text(
+                        text = "Logged in as ${state.currentUser!!.email}",
+                        style = MaterialTheme.typography.body1
+                    )
+                    Spacer(Modifier.height(32.dp))
+                    Button(modifier = Modifier.align(Alignment.End), onClick = {
+                        viewModel.signOut()
+                    }) {
+                        Text(text = "Sign out")
+                    }
+                } else {
+                    Text(
+                        text = "Sign in to sync your journal entries across devices",
+                        style = MaterialTheme.typography.body1
+                    )
+                    Spacer(Modifier.height(32.dp))
+                    SignInButton(
+                        modifier = Modifier.align(Alignment.End),
+                        text = "Sign in with Google",
+                        loadingText = "Signing in...",
+                        isLoading = state.isLoading,
+                        icon = painterResource(id = R.drawable.ic_google_logo),
+                        onClick = {
+                            viewModel.onSignInClicked()
+                            authResultLauncher.launch(signInRequestCode)
+                        }
+                    )
+                    state.signInErrorMessage?.let {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = it)
+                    }
                 }
-            )
-            state.signInErrorMessage?.let {
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(text = it)
+            }
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            elevation = 10.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Used libraries",
+                    style = MaterialTheme.typography.body1
+                )
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = "AndroidX bundle",
+                    style = MaterialTheme.typography.body2
+                )
+                Text(
+                    text = "Firebase",
+                    style = MaterialTheme.typography.body2
+                )
+                Text(
+                    text = "Giphy",
+                    style = MaterialTheme.typography.body2
+                )
+                Text(
+                    text = "Timber",
+                    style = MaterialTheme.typography.body2
+                )
             }
         }
     }

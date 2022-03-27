@@ -9,6 +9,7 @@ import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.data.remote.ApiService
 import tech.svehla.gratitudejournal.data.local.JournalDao
+import tech.svehla.gratitudejournal.data.local.entity.toJournalEntryEntity
 import tech.svehla.gratitudejournal.data.remote.AuthService
 import tech.svehla.gratitudejournal.data.remote.dto.toJournalEntryDto
 import tech.svehla.gratitudejournal.domain.repository.MainRepository
@@ -20,21 +21,11 @@ import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     private val journalDao: JournalDao,
-    private val apiService: ApiService,
-    private val authService: AuthService
+    private val apiService: ApiService
 ) : MainRepository {
-
-    private val _refreshRequiredSharedFlow = MutableSharedFlow<Unit>(replay = 0)
-    override val refreshRequiredSharedFlow: SharedFlow<Unit> = _refreshRequiredSharedFlow
 
     init {
         Timber.d("Injection MainRepository")
-        GlobalScope.launch(Dispatchers.IO) {
-            authService.userChangedFlow.collect {
-                Timber.d("Current user changed")
-                _refreshRequiredSharedFlow.emit(Unit)
-            }
-        }
     }
 
     override fun getJournalEntries(): Flow<Resource<List<JournalEntry>>> = flow {
@@ -96,27 +87,10 @@ class MainRepositoryImpl @Inject constructor(
         emit(Resource.Success(newWordInfo))
     }.flowOn(Dispatchers.IO)
 
-//    override fun getJournalEntries(): Flow<Resource<List<JournalEntry>>> {
-//        return networkBoundResource(
-//            query = { journalDao.getJournalEntries().map { it.map { item -> item.toJournalEntry() } } },
-//            fetch = { firestoreService.fetchJournalEntries().map { it.toJournalEntry() } },
-//            saveFetchResult = { result -> journalDao.insertJournalEntries(result) },
-//        )
-//    }
-
-//    override fun getJournalEntry(date: String): Flow<Resource<JournalEntry>> {
-//        return networkBoundResource(
-//            query = { journalDao.getJournalEntry(date) },
-//            fetch = { firestoreService.fetchJournalEntry(date) },
-//            saveFetchResult = { result ->
-//                result?.let { journalDao.insertJournalEntries(listOf(it)) }
-//            },
-//        )
-//    }
-
     override suspend fun saveJournalEntry(entry: JournalEntry) {
         apiService.saveJournalEntry(entry.toJournalEntryDto())
-        _refreshRequiredSharedFlow.emit(Unit)
+        journalDao.insertJournalEntries(listOf(entry.toJournalEntryEntity()))
+        // TODO: Refresh remote data properly
     }
 
     override suspend fun clearDatabase() {
