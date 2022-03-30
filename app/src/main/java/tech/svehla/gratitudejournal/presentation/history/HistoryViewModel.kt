@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.domain.use_case.history.GetHistoryUseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +19,11 @@ class HistoryViewModel @Inject constructor(
     private val _state: MutableStateFlow<HistoryScreenState> =
         MutableStateFlow(HistoryScreenState())
     val state: StateFlow<HistoryScreenState> = _state
+
+    init {
+        Timber.d("HistoryViewModel init")
+        loadHistory()
+    }
 
     fun loadHistory() {
         viewModelScope.launch {

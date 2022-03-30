@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -22,26 +21,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import coil.size.Size
-import tech.svehla.gratitudejournal.R
+import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.GiphyPicker
+import tech.svehla.gratitudejournal.presentation.ui.util.getActivity
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -61,10 +57,6 @@ fun DetailScreen(
             // Once the event is consumed, notify the ViewModel.
             viewModel.onEventConsumed(event.id)
         }
-    }
-
-    LaunchedEffect(key1 = true) {
-        viewModel.loadDetail()
     }
 
     BackHandler {
@@ -132,7 +124,7 @@ fun DetailScreenContent(
             .padding(16.dp),
     ) {
         Text(
-            text = viewModel.date.value,
+            text = JournalEntry.formatDate(viewModel.date.value),
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )

@@ -15,6 +15,7 @@ import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.domain.use_case.detail.GetDetailUseCase
 import tech.svehla.gratitudejournal.domain.use_case.detail.SaveEntryUseCase
 import tech.svehla.gratitudejournal.presentation.main.NavScreen
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,9 +31,11 @@ class DetailViewModel @Inject constructor(
     private lateinit var _date: String
 
     init {
+        Timber.d("DetailViewModel init")
         savedStateHandle.get<String>(NavScreen.Detail.argument0)?.let { date ->
             _date = date
         }
+        loadDetail()
     }
 
     fun loadDetail(date: String = _date) {

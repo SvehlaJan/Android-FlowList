@@ -39,10 +39,6 @@ fun HistoryScreen(
     val state: HistoryScreenState by viewModel.state.collectAsState()
     val listState = rememberLazyListState()
 
-    LaunchedEffect(key1 = true) {
-        viewModel.loadHistory()
-    }
-
     if (state.entries != null) {
         val items = state.entries!!
         if (items.isEmpty()) {
@@ -108,13 +104,13 @@ fun HistoryEntry(entry: JournalEntry, selectEntry: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable { selectEntry(entry.date) },
         elevation = 10.dp
     ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .clickable { selectEntry(entry.date) }
         ) {
             Text(
                 text = entry.firstNote,
@@ -122,7 +118,7 @@ fun HistoryEntry(entry: JournalEntry, selectEntry: (String) -> Unit) {
             )
             Text(
                 modifier = Modifier.padding(top = 16.dp).align(Alignment.End),
-                text = entry.date,
+                text = entry.formattedDate,
                 style = MaterialTheme.typography.body2
             )
         }

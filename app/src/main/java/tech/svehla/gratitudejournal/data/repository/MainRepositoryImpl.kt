@@ -37,20 +37,28 @@ class MainRepositoryImpl @Inject constructor(
         try {
             val remoteJournalEntries = apiService.fetchJournalEntries()
             journalDao.insertJournalEntries(remoteJournalEntries.map { it.toJournalEntryEntity() })
-        } catch (e: HttpException) {
-            emit(
-                Resource.Error(
-                    message = "Oops, something went wrong!",
-                    data = journalEntries
-                )
-            )
-        } catch (e: IOException) {
-            emit(
-                Resource.Error(
-                    message = "Couldn't reach server, check your internet connection.",
-                    data = journalEntries
-                )
-            )
+        } catch (e: Exception) {
+            when (e) {
+                is IOException, is RuntimeException -> {
+                    emit(
+                        Resource.Error(
+                            message = "Oops, something went wrong!",
+                            data = journalEntries
+                        )
+                    )
+                }
+                is HttpException -> {
+                    emit(
+                        Resource.Error(
+                            message = "Couldn't reach server, check your internet connection.",
+                            data = journalEntries
+                        )
+                    )
+                }
+                else -> {
+                    throw e
+                }
+            }
         }
 
         val newJournalEntries = journalDao.getJournalEntries().map { it.toJournalEntry() }

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,6 +42,7 @@ import tech.svehla.gratitudejournal.R
 import tech.svehla.gratitudejournal.presentation.detail.DetailScreen
 import tech.svehla.gratitudejournal.presentation.history.HistoryScreen
 import tech.svehla.gratitudejournal.presentation.settings.SettingsScreen
+import tech.svehla.gratitudejournal.presentation.ui.util.getActivity
 import java.time.LocalDate
 
 val items = listOf(
@@ -124,13 +126,14 @@ fun AppBottomBar(
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items
                         popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                            saveState = false
+                            inclusive = true
                         }
                         // Avoid multiple copies of the same destination when
                         // reselecting the same item
                         launchSingleTop = true
                         // Restore state when reselecting a previously selected item
-                        restoreState = true
+                        restoreState = false
                     }
                 },
             )
@@ -144,6 +147,7 @@ fun AppNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues = PaddingValues(top = 16.dp, bottom = 16.dp)
 ) {
+
     NavHost(
         navController,
         startDestination = NavScreen.History.route,
@@ -170,11 +174,12 @@ fun AppNavHost(
             val date = backStackEntry.arguments?.getString(NavScreen.Detail.argument0)
                 ?: return@composable
 
+
             DetailScreen(
                 date = date,
                 viewModel = hiltViewModel(),
                 onBackPressed = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             )
         }

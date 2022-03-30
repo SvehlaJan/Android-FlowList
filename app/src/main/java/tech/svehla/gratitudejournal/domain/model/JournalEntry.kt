@@ -2,6 +2,7 @@ package tech.svehla.gratitudejournal.domain.model
 
 import androidx.compose.runtime.Immutable
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Immutable
 data class JournalEntry(
@@ -27,6 +28,9 @@ data class JournalEntry(
             dayScore = null,
             lastModified = LocalDate.now().toString()
         )
+
+        fun formatDate(date: String): String = LocalDate.parse(date, DateTimeFormatter.ISO_DATE)
+            .format(DateTimeFormatter.ofPattern("dd. MMMM yyyy"))
     }
 
     fun isContentEqual(other: JournalEntry): Boolean {
@@ -40,4 +44,6 @@ data class JournalEntry(
                 dayScore == other.dayScore &&
                 lastModified == other.lastModified
     }
+
+    val formattedDate: String = formatDate(date)
 }
