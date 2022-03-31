@@ -7,14 +7,20 @@ My playground project to learn new tools from AndroidX, Jetpack and Kotlin.
 Gratitude journal is a simple app that allows you to write down your gratitude for the day. App
 consists of 3 screens:
 
-- History screen - list of all your gratitude entries. After clicking on an item, a Detail screen is
-  opened with specific entry.
-- Detail screen - allows you to edit the entry - edit notes and add a GIF image.
-- Settings screen - allows to sign in to your Google account and sign out.
+- *History screen* - list of user’s gratitude entries from the past. After clicking on an item, a Detail screen is opened.
+- *Detail screen* - allows users to edit the gratitude entry. They can edit the notes and add a GIF image representing the day.
+- *Settings screen* - allows users to sync the journal over multiple devices by signing in to Google account. Also lists used software libraries.
 
 
-The application is using Firebase Firestore ONLY for remote data storage - instead of REST API.
-Firestore has great caching capabilities but for demonstration purposes it is not used.
+The application is using MVVM + Clean Architecture.
+
+UI is done with Jetpack Compose. Only AndroidView component is Giphy picker.
+
+Dependency injection is handled with Hilt.
+
+Asynchronous tasks and handling of data is done with Kotlin Flows + Coroutines.
+
+Firebase Firestore is used ONLY for remote data storage - instead of REST API. Firestore has great caching capabilities but for demonstration purposes it is not used.
 
 Caching is done in the local database, with use of Room.
 
@@ -26,6 +32,7 @@ For authentication, Firebase Auth is used.
 
 For selecting a GIF image, the app uses the Giphy.
 
+
 # How to run
 
 - Add `webClientId` to your local.properties and `google-services.json` to /src folder.
@@ -33,11 +40,11 @@ For selecting a GIF image, the app uses the Giphy.
 - Add `giphyApiKey` to your local.properties.
   Follow https://developers.giphy.com/docs/api/quick-start/android for instructions.
 
-## Immediate TODOs:
+## TODOs:
 
-- Add more tests!
+- Add tests! :-)
 - UX improvements
-- Save entry when user clicks on item in bottom bar
+- Save entry when user clicks on item in bottom bar (utilise Compose side-effects?)
 
 ## Future development:
 
