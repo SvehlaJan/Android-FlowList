@@ -65,7 +65,7 @@ class MainRepositoryImpl @Inject constructor(
         emit(Resource.Success(newJournalEntries))
     }.flowOn(Dispatchers.IO)
 
-    override fun getJournalEntry(date: String): Flow<Resource<JournalEntry>> = flow {
+    override fun getJournalEntry(date: String): Flow<Resource<JournalEntry?>> = flow {
         emit(Resource.Loading())
 
         val journalEntry = journalDao.getJournalEntry(date)?.toJournalEntry()

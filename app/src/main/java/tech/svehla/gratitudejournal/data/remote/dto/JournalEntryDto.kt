@@ -4,7 +4,7 @@ import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
 import tech.svehla.gratitudejournal.data.local.entity.JournalEntryEntity
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
-import java.util.*
+import java.time.LocalDate
 
 
 data class JournalEntryDto(
@@ -28,7 +28,7 @@ data class JournalEntryDto(
             gifUrl = gifUrl ?: "",
             favoriteEntry = favoriteEntry ?: -1,
             dayScore = dayScore ?: -1,
-            lastModified = lastModified ?: Date().toString()
+            lastModified = lastModified ?: LocalDate.now().toString()
         )
     }
 
@@ -42,7 +42,7 @@ data class JournalEntryDto(
             gifUrl = gifUrl ?: "",
             favoriteEntry = favoriteEntry ?: -1,
             dayScore = dayScore ?: -1,
-            lastModified = lastModified ?: Date().toString()
+            lastModified = lastModified ?: LocalDate.now().toString()
         )
     }
 }

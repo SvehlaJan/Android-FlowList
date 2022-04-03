@@ -37,7 +37,6 @@ import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.GiphyPicker
-import tech.svehla.gratitudejournal.presentation.ui.util.getActivity
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

@@ -112,27 +112,23 @@ dependencies {
     implementation "androidx.compose.ui:ui:$versions.composeVersion"
     implementation "androidx.compose.material:material:$versions.composeVersion"
     implementation "androidx.compose.ui:ui-tooling-preview:$versions.composeVersion"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycleVersion"
+    implementation "androidx.activity:activity-compose:$versions.composeActivityVersion"
     implementation "androidx.navigation:navigation-compose:$versions.composeNavVersion"
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$versions.composeVersion"
     debugImplementation "androidx.compose.ui:ui-tooling:$versions.composeVersion"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$versions.composeVersion"
 
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0"
     implementation platform("com.google.firebase:firebase-bom:$versions.firebaseVersion")
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3"
 
-    // architecture components
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycleVersion"
+    // room
     implementation "androidx.room:room-ktx:$versions.roomVersion"
     kapt "androidx.room:room-compiler:$versions.roomVersion"
 
+    // UI
     implementation "com.giphy.sdk:ui:$versions.giphyVersion"
     implementation "io.coil-kt:coil-compose:$versions.coilVersion"
     implementation "io.coil-kt:coil-gif:$versions.coilVersion"
@@ -151,4 +147,12 @@ dependencies {
 
     // logging
     implementation "com.jakewharton.timber:timber:$versions.timberVersion"
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'app.cash.turbine:turbine:0.7.0'
+    testImplementation "com.google.truth:truth:1.1.3"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$versions.composeVersion"
 }

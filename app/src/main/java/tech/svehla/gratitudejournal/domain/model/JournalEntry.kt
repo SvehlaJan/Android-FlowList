@@ -10,11 +10,11 @@ data class JournalEntry(
     val firstNote: String,
     val secondNote: String,
     val thirdNote: String,
-    val imageUrl: String?,
-    val gifUrl: String?,
-    val favoriteEntry: Int?,
-    val dayScore: Int?,
-    val lastModified: String
+    val imageUrl: String? = null,
+    val gifUrl: String? = null,
+    val favoriteEntry: Int? = null,
+    val dayScore: Int? = null,
+    val lastModified: String = LocalDate.now().toString()
 ) {
     companion object {
         fun empty(date: String) = JournalEntry(
