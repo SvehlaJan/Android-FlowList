@@ -18,6 +18,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,6 +39,7 @@ import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.GiphyPicker
+import tech.svehla.gratitudejournal.presentation.ui.util.observeAsSate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -58,9 +61,14 @@ fun DetailScreen(
         }
     }
 
-    BackHandler {
-        viewModel.onBackPressed()
+    DisposableEffect(key1 = viewModel) {
+        onDispose {
+            viewModel.onStop()
+        }
     }
+
+    val lifeCycleState = LocalLifecycleOwner.current.lifecycle.observeAsSate()
+    val uiState = lifeCycleState.value
 
     when (state.uiState) {
         UIState.Content -> {
