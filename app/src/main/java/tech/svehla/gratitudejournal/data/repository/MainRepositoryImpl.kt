@@ -61,8 +61,9 @@ class MainRepositoryImpl @Inject constructor(
             }
         }
 
-        val newJournalEntries = journalDao.getJournalEntries().map { it.toJournalEntry() }
-        emit(Resource.Success(newJournalEntries))
+        journalDao.getJournalEntriesFlow().collect { entries ->
+            emit(Resource.Success(entries.map { it.toJournalEntry() }))
+        }
     }.flowOn(Dispatchers.IO)
 
     override fun getJournalEntry(date: String): Flow<Resource<JournalEntry?>> = flow {
@@ -91,8 +92,9 @@ class MainRepositoryImpl @Inject constructor(
             )
         }
 
-        val newWordInfo = journalDao.getJournalEntry(date)?.toJournalEntry()
-        emit(Resource.Success(newWordInfo))
+        journalDao.getJournalEntryFlow(date).collect {
+            emit(Resource.Success(it?.toJournalEntry()))
+        }
     }.flowOn(Dispatchers.IO)
 
     override suspend fun saveJournalEntry(entry: JournalEntry) {
