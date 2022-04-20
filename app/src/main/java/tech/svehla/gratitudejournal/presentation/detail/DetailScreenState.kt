@@ -1,5 +1,6 @@
 package tech.svehla.gratitudejournal.presentation.detail
 
+import tech.svehla.gratitudejournal.domain.model.ErrorEntity
 import java.util.*
 
 data class DetailScreenState(
@@ -11,7 +12,7 @@ data class DetailScreenState(
 sealed class UIState {
     object Content : UIState()
     object Loading : UIState()
-    data class Error(val errorMessage: String?) : UIState()
+    data class Error(val error: ErrorEntity?) : UIState()
     object GifPicker : UIState()
 }
 

@@ -1,7 +1,6 @@
 package tech.svehla.gratitudejournal.presentation.detail
 
 import android.os.Build.VERSION.SDK_INT
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -89,7 +88,7 @@ fun DetailScreen(
         }
         is UIState.Error -> {
             ErrorScreen(
-                message = (state.uiState as UIState.Error).errorMessage,
+                error = (state.uiState as UIState.Error).error,
                 retry = {
                     viewModel.loadDetail(date)
                 }

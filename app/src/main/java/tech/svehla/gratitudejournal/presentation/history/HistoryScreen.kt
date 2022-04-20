@@ -18,13 +18,11 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
@@ -55,7 +53,7 @@ fun HistoryScreen(
     } else if (state.isLoading) {
         LoadingScreen()
     } else {
-        ErrorScreen(message = state.errorMessage, retry = { viewModel.loadHistory() })
+        ErrorScreen(error = state.error, retry = { viewModel.loadHistory() })
     }
 }
 

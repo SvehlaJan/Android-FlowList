@@ -53,7 +53,7 @@ class DetailViewModel @Inject constructor(
                     }
                     is Resource.Error -> {
                         _state.value =
-                            DetailScreenState(uiState = UIState.Error(errorMessage = result.message))
+                            DetailScreenState(uiState = UIState.Error(error = result.error))
                     }
                     is Resource.Loading -> {
                         _state.value = DetailScreenState(uiState = UIState.Loading)
