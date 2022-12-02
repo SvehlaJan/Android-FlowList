@@ -11,14 +11,14 @@ import android.graphics.drawable.Drawable
 /**
  * Original from https://github.com/Giphy/giphy-android-sdk/blob/6d5a52b148fff3b2122130781d6de9d0ad7456c3/app/src/main/java/com/giphy/sdk/uidemo/LoadingDrawable.kt
  */
-class GiphyLoadingDrawable(val shape: Shape) : Drawable(), ValueAnimator.AnimatorUpdateListener {
-    val paint = Paint().apply {
+class GiphyLoadingDrawable(private val shape: Shape) : Drawable(), ValueAnimator.AnimatorUpdateListener {
+    private val paint = Paint().apply {
         color = Color.RED
         isAntiAlias = true
         style = Paint.Style.FILL
     }
-    val animator = ValueAnimator.ofFloat(20.0f, 60f)
-    var currentSize = 50f
+    private val animator = ValueAnimator.ofFloat(20.0f, 60f)
+    private var currentSize = 50f
 
     init {
         animator.addUpdateListener(this)
@@ -28,8 +28,6 @@ class GiphyLoadingDrawable(val shape: Shape) : Drawable(), ValueAnimator.Animato
         animator.start()
     }
     override fun draw(p0: Canvas) {
-        if (!animator.isRunning) {
-        }
         when (shape) {
             Shape.Circle ->
                 p0.drawCircle(bounds.width() / 2f, bounds.height() / 2f, currentSize, paint)
@@ -41,6 +39,9 @@ class GiphyLoadingDrawable(val shape: Shape) : Drawable(), ValueAnimator.Animato
     override fun setAlpha(p0: Int) {
     }
 
+    @Deprecated("Deprecated in Java",
+        ReplaceWith("PixelFormat.TRANSPARENT", "android.graphics.PixelFormat")
+    )
     override fun getOpacity(): Int {
         return PixelFormat.TRANSPARENT
     }
@@ -54,8 +55,8 @@ class GiphyLoadingDrawable(val shape: Shape) : Drawable(), ValueAnimator.Animato
         Circle
     }
 
-    override fun onAnimationUpdate(p0: ValueAnimator?) {
-        currentSize = p0?.animatedValue as Float
+    override fun onAnimationUpdate(p0: ValueAnimator) {
+        currentSize = p0.animatedValue as Float
         invalidateSelf()
     }
 }

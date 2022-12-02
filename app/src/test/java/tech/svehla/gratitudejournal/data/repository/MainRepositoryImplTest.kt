@@ -1,6 +1,6 @@
 package tech.svehla.gratitudejournal.data.repository
 
-import app.cash.turbine.FlowTurbine
+import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.Flow
@@ -17,18 +17,21 @@ import tech.svehla.gratitudejournal.data.remote.ApiService
 import tech.svehla.gratitudejournal.data.remote.dto.JournalEntryDto
 import tech.svehla.gratitudejournal.data.remote.dto.toJournalEntryDto
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.domain.repository.ErrorHandler
 
 class MainRepositoryImplTest {
 
     private lateinit var mainRepositoryImpl: MainRepositoryImpl
     private lateinit var fakeJournalDao: FakeJournalDao
     private lateinit var fakeApiService: FakeApiService
+    private lateinit var errorHandler: ErrorHandler
 
     @Before
     fun setUp() {
         fakeJournalDao = FakeJournalDao()
         fakeApiService = FakeApiService()
-        mainRepositoryImpl = MainRepositoryImpl(fakeJournalDao, fakeApiService)
+        errorHandler = GeneralErrorHandlerImpl()
+        mainRepositoryImpl = MainRepositoryImpl(fakeJournalDao, fakeApiService, errorHandler)
     }
 
     @Test
@@ -137,7 +140,7 @@ class MainRepositoryImplTest {
     }
 
     private suspend fun <T> assertResourceSequence(
-        flowTurbine: FlowTurbine<T>,
+        flowTurbine: ReceiveTurbine<T>,
         expectedResources: List<T>
     ) {
         expectedResources.forEach {

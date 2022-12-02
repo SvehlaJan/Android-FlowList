@@ -108,7 +108,7 @@ kapt {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "androidx.core:core-ktx:$versions.coreKtxVersion"
     implementation "androidx.compose.ui:ui:$versions.composeVersion"
     implementation "androidx.compose.material:material:$versions.composeVersion"
     implementation "androidx.compose.ui:ui-tooling-preview:$versions.composeVersion"
@@ -118,8 +118,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$versions.composeVersion"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$versions.composeVersion"
 
-    implementation 'com.google.android.gms:play-services-auth:20.1.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0"
+    implementation "com.google.android.gms:play-services-auth:$versions.playServicesAuthVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$versions.playServicesCoroutinesVersion"
     implementation platform("com.google.firebase:firebase-bom:$versions.firebaseVersion")
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
@@ -148,11 +148,11 @@ dependencies {
     // logging
     implementation "com.jakewharton.timber:timber:$versions.timberVersion"
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'app.cash.turbine:turbine:0.7.0'
-    testImplementation "com.google.truth:truth:1.1.3"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation "junit:junit:$versions.junitVersion"
+    testImplementation "app.cash.turbine:turbine:$versions.turbineVersion"
+    testImplementation "com.google.truth:truth:$versions.truthVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutinesTestVersion"
+    androidTestImplementation "androidx.test.ext:junit:$versions.junitExtVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espressoCoreVersion"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$versions.composeVersion"
 }

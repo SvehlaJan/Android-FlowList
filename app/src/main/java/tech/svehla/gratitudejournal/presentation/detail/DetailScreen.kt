@@ -66,9 +66,6 @@ fun DetailScreen(
         }
     }
 
-    val lifeCycleState = LocalLifecycleOwner.current.lifecycle.observeAsSate()
-    val uiState = lifeCycleState.value
-
     when (state.uiState) {
         UIState.Content -> {
             DetailScreenContent(
