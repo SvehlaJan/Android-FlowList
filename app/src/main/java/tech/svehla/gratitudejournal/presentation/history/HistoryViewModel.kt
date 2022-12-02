@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.domain.use_case.history.GetHistoryUseCase
+import tech.svehla.gratitudejournal.presentation.model.toVO
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +30,7 @@ class HistoryViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     val entries = result.data.sortedByDescending { it.date }
-                    _state.update { HistoryScreenState(entries = entries) }
+                    _state.update { HistoryScreenState(entries = entries.map { it.toVO() }) }
                 }
                 is Resource.Loading -> {
                     _state.update { HistoryScreenState(isLoading = true) }

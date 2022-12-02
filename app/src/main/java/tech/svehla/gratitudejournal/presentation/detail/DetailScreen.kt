@@ -28,7 +28,7 @@ import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.GiphyPicker
@@ -84,7 +84,7 @@ fun DetailScreen(
         }
         state.content != null -> {
             DetailScreenContent(
-                uiState = state.content!!,
+                journalEntry = state.content!!,
                 onUiAction = {
                     viewModel.onUiAction(it)
                 }
@@ -95,7 +95,7 @@ fun DetailScreen(
 
 @Composable
 fun DetailScreenContent(
-    uiState: JournalUiContent,
+    journalEntry: JournalEntryVO,
     onUiAction: (UIAction) -> Unit = {},
 ) {
 
@@ -123,14 +123,14 @@ fun DetailScreenContent(
             .padding(16.dp),
     ) {
         Text(
-            text = JournalEntry.formatDate(uiState.date),
+            text = journalEntry.formattedDate(),
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("First Note") },
-            value = uiState.firstNote,
+            value = journalEntry.firstNote,
             keyboardOptions = defaultKeyboardOptions,
             onValueChange = {
                 onUiAction(UIAction.FirstNoteUpdated(it))
@@ -139,7 +139,7 @@ fun DetailScreenContent(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Second Note") },
-            value = uiState.secondNote,
+            value = journalEntry.secondNote,
             keyboardOptions = defaultKeyboardOptions,
             onValueChange = {
                 onUiAction(UIAction.SecondNoteUpdated(it))
@@ -148,7 +148,7 @@ fun DetailScreenContent(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Third Note") },
-            value = uiState.thirdNote,
+            value = journalEntry.thirdNote,
             onValueChange = {
                 onUiAction(UIAction.ThirdNoteUpdated(it))
             },
@@ -160,13 +160,13 @@ fun DetailScreenContent(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        if (uiState.gifUrl != null) {
+        if (journalEntry.gifUrl != null) {
             Image(
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable { onUiAction(UIAction.GifPickerRequested) },
                 painter = rememberAsyncImagePainter(
-                    model = uiState.gifUrl,
+                    model = journalEntry.gifUrl,
                     imageLoader = imageLoader,
                     contentScale = ContentScale.FillBounds,
                 ),

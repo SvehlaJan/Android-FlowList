@@ -7,7 +7,6 @@ import javax.inject.Inject
 class SaveEntryUseCase @Inject constructor(
     private val mainRepository: MainRepository
 ) {
-
     suspend operator fun invoke(entry: JournalEntry) {
         return mainRepository.saveJournalEntry(entry)
     }

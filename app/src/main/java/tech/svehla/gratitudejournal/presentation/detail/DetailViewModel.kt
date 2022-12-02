@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -16,8 +15,9 @@ import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.domain.use_case.detail.GetDetailUseCase
 import tech.svehla.gratitudejournal.domain.use_case.detail.SaveEntryUseCase
 import tech.svehla.gratitudejournal.presentation.main.NavScreen
-import timber.log.Timber
-import java.time.LocalDate
+import tech.svehla.gratitudejournal.presentation.model.JournalEntryVO
+import tech.svehla.gratitudejournal.presentation.model.toDomain
+import tech.svehla.gratitudejournal.presentation.model.toVO
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +32,7 @@ class DetailViewModel @Inject constructor(
         MutableStateFlow(DetailScreenStateNew())
     val state: StateFlow<DetailScreenStateNew> = _state
     private lateinit var _date: String
-    private var originalUiContent: JournalUiContent? = null
+    private var initialJournalEntry: JournalEntryVO? = null
 
     init {
         savedStateHandle.get<String>(NavScreen.Detail.argument0)?.let { date ->
@@ -46,23 +46,14 @@ class DetailViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     val entry = result.data ?: JournalEntry.empty(date)
-                    val uiContent = JournalUiContent(
-                        date = entry.date,
-                        firstNote = entry.firstNote,
-                        secondNote = entry.secondNote,
-                        thirdNote = entry.thirdNote,
-                        imageUrl = entry.imageUrl,
-                        gifUrl = entry.gifUrl,
-                        dayScore = entry.dayScore,
-                        favoriteEntry = entry.favoriteEntry,
-                    )
-                    originalUiContent = uiContent
+                    val vo = entry.toVO()
+                    initialJournalEntry = vo
 
                     _state.update {
                         it.copy(
                             isLoading = false,
                             errorReason = null,
-                            content = uiContent
+                            content = vo
                         )
                     }
                 }
@@ -116,20 +107,11 @@ class DetailViewModel @Inject constructor(
     }
 
     fun onStop() {
-        if (originalUiContent != _state.value.content) {
-            externalScope.launch(Dispatchers.IO) {
-                val entry = JournalEntry(
-                    date = _state.value.content?.date ?: "",
-                    firstNote = _state.value.content?.firstNote ?: "",
-                    secondNote = _state.value.content?.secondNote ?: "",
-                    thirdNote = _state.value.content?.thirdNote ?: "",
-                    imageUrl = _state.value.content?.imageUrl,
-                    gifUrl = _state.value.content?.gifUrl,
-                    dayScore = _state.value.content?.dayScore,
-                    favoriteEntry = _state.value.content?.favoriteEntry,
-                    lastModified = LocalDate.now().toString(),
-                )
-                saveEntryUseCase(entry)
+        if (initialJournalEntry?.equals(_state.value.content) == false) {
+            externalScope.launch {
+                _state.value.content?.toDomain()?.let {
+                    saveEntryUseCase(it)
+                }
             }
         }
     }
