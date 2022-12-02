@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -21,6 +22,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.svehla.gratitudejournal.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
+import tech.svehla.gratitudejournal.presentation.ui.util.JournalEntryVODataProvider
+import tech.svehla.gratitudejournal.presentation.ui.util.JournalEntryVOListDataProvider
 import java.time.LocalDate
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -74,10 +77,11 @@ fun HistoryEmptyScreen(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun HistoryListScreen(
     modifier: Modifier = Modifier,
-    items: List<JournalEntryVO>,
+    @PreviewParameter(JournalEntryVOListDataProvider::class) items: List<JournalEntryVO>,
     selectEntry: (String) -> Unit = {},
 ) {
     LazyColumn(
@@ -95,10 +99,11 @@ fun HistoryListScreen(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun HistoryEntry(
     modifier: Modifier = Modifier,
-    entry: JournalEntryVO,
+    @PreviewParameter(JournalEntryVODataProvider::class) entry: JournalEntryVO,
     selectEntry: (String) -> Unit = {},
 ) {
     Card(

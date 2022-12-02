@@ -11,4 +11,6 @@ data class JournalEntryVO(
     val imageUrl: String?,
 ) {
     fun formattedDate(): String = DateUtils.fromIsoToHumanReadableDate(date)
+
+    companion object
 }

@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,6 +34,7 @@ import tech.svehla.gratitudejournal.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.GiphyPicker
+import tech.svehla.gratitudejournal.presentation.ui.util.JournalEntryVODataProvider
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -93,9 +96,10 @@ fun DetailScreen(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun DetailScreenContent(
-    journalEntry: JournalEntryVO,
+    @PreviewParameter(JournalEntryVODataProvider::class) journalEntry: JournalEntryVO,
     onUiAction: (UIAction) -> Unit = {},
 ) {
 
