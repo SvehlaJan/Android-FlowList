@@ -20,25 +20,25 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-  @Provides
-  @Singleton
-  fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
-    return OkHttpClient.Builder()
-      .addInterceptor(RequestInterceptor())
-      .build()
-  }
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(RequestInterceptor())
+            .build()
+    }
 
-  @Provides
-  @Singleton
-  fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-    return Retrofit.Builder()
-      .client(okHttpClient)
-      .baseUrl(
-        "https://gist.githubusercontent.com/skydoves/176c209dbce4a53c0ff9589e07255f30/raw/6489d9712702e093c4df71500fb822f0d408ef75/"
-      )
-      .addConverterFactory(GsonConverterFactory.create())
-      .build()
-  }
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(
+                "https://gist.githubusercontent.com/skydoves/176c209dbce4a53c0ff9589e07255f30/raw/6489d9712702e093c4df71500fb822f0d408ef75/"
+            )
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
 //  @Provides
 //  @Singleton
@@ -46,15 +46,15 @@ object NetworkModule {
 //    return retrofit.create(ApiService::class.java)
 //  }
 
-  @Provides
-  @Singleton
-  fun provideFirestoreService(authService: AuthService): ApiService {
-    return FirestoreServiceImpl(authService)
-  }
+    @Provides
+    @Singleton
+    fun provideFirestoreService(authService: AuthService): ApiService {
+        return FirestoreServiceImpl(authService)
+    }
 
-  @Provides
-  @Singleton
-  fun provideAuthService(): AuthService {
-    return AuthServiceImpl()
-  }
+    @Provides
+    @Singleton
+    fun provideAuthService(): AuthService {
+        return AuthServiceImpl()
+    }
 }

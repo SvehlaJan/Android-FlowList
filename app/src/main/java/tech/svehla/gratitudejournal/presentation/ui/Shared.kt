@@ -1,10 +1,6 @@
 package tech.svehla.gratitudejournal.presentation.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
@@ -13,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import tech.svehla.gratitudejournal.domain.model.ErrorEntity
 
 @Composable
 fun LoadingScreen() {
@@ -26,16 +23,23 @@ fun LoadingScreen() {
 
 @Composable
 fun ErrorScreen(
-    message: String?,
+    error: ErrorEntity?,
     retry: () -> Unit
 ) {
+    val errorMessage = when (error) {
+        is ErrorEntity.Network -> "Network error"
+        is ErrorEntity.NotFound -> "Not found"
+        is ErrorEntity.AccessDenied -> "Access denied"
+        is ErrorEntity.ServiceUnavailable -> "Service unavailable"
+        else -> "Unknown error"
+    }
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = message ?: "An unexpected error occurred",
+            text = errorMessage,
             style = MaterialTheme.typography.h6
         )
         Button(
