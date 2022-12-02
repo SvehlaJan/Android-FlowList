@@ -150,7 +150,7 @@ fun AppNavHost(
     ) {
         composable(NavScreen.History.route) {
             HistoryScreen(
-                viewModel = hiltViewModel()
+//                viewModel = hiltViewModel()
             ) {
                 navController.navigate("${NavScreen.Detail.route}/$it") {
 //                    popUpTo(NavScreen.History.route) {

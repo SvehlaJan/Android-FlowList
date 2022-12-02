@@ -1,16 +1,8 @@
 package tech.svehla.gratitudejournal.presentation.history
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
@@ -18,24 +10,26 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import java.time.LocalDate
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun HistoryScreen(
-    viewModel: HistoryViewModel,
-    selectEntry: (String) -> Unit
+    selectEntry: (String) -> Unit,
 ) {
-
-    val state: HistoryScreenState by viewModel.state.collectAsState()
-    val listState = rememberLazyListState()
+    val viewModel: HistoryViewModel = hiltViewModel()
+    val state: HistoryScreenState by viewModel.state.collectAsStateWithLifecycle()
 
     if (state.entries != null) {
         val items = state.entries!!
@@ -45,7 +39,6 @@ fun HistoryScreen(
             )
         } else {
             HistoryListScreen(
-                listState = listState,
                 items = items,
                 selectEntry = selectEntry
             )
@@ -53,14 +46,18 @@ fun HistoryScreen(
     } else if (state.isLoading) {
         LoadingScreen()
     } else {
-        ErrorScreen(error = state.error, retry = { viewModel.loadHistory() })
+        ErrorScreen(error = state.errorReason, retry = { viewModel.loadHistory() })
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun HistoryEmptyScreen(selectEntry: (String) -> Unit) {
+fun HistoryEmptyScreen(
+    modifier: Modifier = Modifier,
+    selectEntry: (String) -> Unit = {}
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -79,17 +76,18 @@ fun HistoryEmptyScreen(selectEntry: (String) -> Unit) {
 
 @Composable
 fun HistoryListScreen(
-    listState: LazyListState,
+    modifier: Modifier = Modifier,
     items: List<JournalEntry>,
-    selectEntry: (String) -> Unit
+    selectEntry: (String) -> Unit = {},
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
+        modifier = modifier.fillMaxSize(),
+        state = rememberLazyListState(),
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
     ) {
         items(items) { item ->
             HistoryEntry(
+                modifier = Modifier.fillMaxWidth(),
                 entry = item,
                 selectEntry = selectEntry
             )
@@ -98,10 +96,13 @@ fun HistoryListScreen(
 }
 
 @Composable
-fun HistoryEntry(entry: JournalEntry, selectEntry: (String) -> Unit) {
+fun HistoryEntry(
+    modifier: Modifier = Modifier,
+    entry: JournalEntry,
+    selectEntry: (String) -> Unit = {},
+) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .padding(12.dp)
             .clickable { selectEntry(entry.date) },
         elevation = 10.dp
@@ -115,7 +116,9 @@ fun HistoryEntry(entry: JournalEntry, selectEntry: (String) -> Unit) {
                 style = MaterialTheme.typography.body1
             )
             Text(
-                modifier = Modifier.padding(top = 16.dp).align(Alignment.End),
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .align(Alignment.End),
                 text = entry.formattedDate,
                 style = MaterialTheme.typography.body2
             )
