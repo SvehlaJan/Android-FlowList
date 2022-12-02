@@ -1,7 +1,7 @@
 package tech.svehla.gratitudejournal.domain.repository
 
-import tech.svehla.gratitudejournal.domain.model.ErrorEntity
+import tech.svehla.gratitudejournal.domain.model.ErrorReason
 
 interface ErrorHandler {
-    fun getError(throwable: Throwable): ErrorEntity
+    fun processError(throwable: Throwable): ErrorReason
 }

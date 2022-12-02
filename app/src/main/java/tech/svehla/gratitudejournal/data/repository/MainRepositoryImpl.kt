@@ -40,7 +40,7 @@ class MainRepositoryImpl @Inject constructor(
                 emit(Resource.Success(entries.map { it.toJournalEntry() }))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(errorHandler.getError(e)))
+            emit(Resource.Error(errorHandler.processError(e)))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -59,7 +59,7 @@ class MainRepositoryImpl @Inject constructor(
                 emit(Resource.Success(it?.toJournalEntry()))
             }
         } catch (e: HttpException) {
-            emit(Resource.Error(errorHandler.getError(e)))
+            emit(Resource.Error(errorHandler.processError(e)))
         }
     }.flowOn(Dispatchers.IO)
 

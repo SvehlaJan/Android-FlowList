@@ -3,33 +3,27 @@ package tech.svehla.gratitudejournal.presentation.detail
 import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
@@ -38,16 +32,16 @@ import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.presentation.ui.ErrorScreen
 import tech.svehla.gratitudejournal.presentation.ui.LoadingScreen
 import tech.svehla.gratitudejournal.presentation.ui.components.GiphyPicker
-import tech.svehla.gratitudejournal.presentation.ui.util.observeAsSate
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun DetailScreen(
     date: String,
     viewModel: DetailViewModel,
     onBackPressed: () -> Unit
 ) {
-    val state: DetailScreenState by viewModel.state.collectAsState()
+    val state: DetailScreenStateNew by viewModel.state.collectAsStateWithLifecycle()
+
     state.events.firstOrNull()?.let { event ->
         LaunchedEffect(event) {
             when (event) {
@@ -66,41 +60,43 @@ fun DetailScreen(
         }
     }
 
-    when (state.uiState) {
-        UIState.Content -> {
-            DetailScreenContent(
-                viewModel = viewModel,
-                onSelectGifClicked = {
-                    viewModel.onSelectGifClicked()
-                }
-            )
+    when {
+        state.isLoading -> {
+            LoadingScreen()
         }
-        is UIState.GifPicker -> {
-            GiphyPicker(
-                modifier = Modifier.fillMaxSize(),
-                onMediaSelected = { media ->
-                    viewModel.onGifSelected(media)
-                }
-            )
-        }
-        is UIState.Error -> {
+        state.errorReason != null -> {
             ErrorScreen(
-                error = (state.uiState as UIState.Error).error,
+                error = state.errorReason,
                 retry = {
                     viewModel.loadDetail(date)
                 }
             )
         }
-        is UIState.Loading -> {
-            LoadingScreen()
+        state.showGifPicker -> {
+            GiphyPicker(
+                modifier = Modifier.fillMaxSize(),
+                onMediaSelected = { media ->
+                    media?.images?.original?.gifUrl?.let { url ->
+                        viewModel.onUiAction(UIAction.GifSelected(url))
+                    }
+                }
+            )
+        }
+        state.content != null -> {
+            DetailScreenContent(
+                uiState = state.content!!,
+                onUiAction = {
+                    viewModel.onUiAction(it)
+                }
+            )
         }
     }
 }
 
 @Composable
 fun DetailScreenContent(
-    viewModel: DetailViewModel,
-    onSelectGifClicked: () -> Unit,
+    uiState: JournalUiContent,
+    onUiAction: (UIAction) -> Unit = {},
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -127,34 +123,34 @@ fun DetailScreenContent(
             .padding(16.dp),
     ) {
         Text(
-            text = JournalEntry.formatDate(viewModel.date.value),
+            text = JournalEntry.formatDate(uiState.date),
             style = MaterialTheme.typography.h6,
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("First Note") },
-            value = viewModel.firstNote.value,
+            value = uiState.firstNote,
             keyboardOptions = defaultKeyboardOptions,
             onValueChange = {
-                viewModel.firstNote.value = it
+                onUiAction(UIAction.FirstNoteUpdated(it))
             },
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Second Note") },
-            value = viewModel.secondNote.value,
+            value = uiState.secondNote,
             keyboardOptions = defaultKeyboardOptions,
             onValueChange = {
-                viewModel.secondNote.value = it
+                onUiAction(UIAction.SecondNoteUpdated(it))
             },
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Third Note") },
-            value = viewModel.thirdNote.value,
+            value = uiState.thirdNote,
             onValueChange = {
-                viewModel.thirdNote.value = it
+                onUiAction(UIAction.ThirdNoteUpdated(it))
             },
             keyboardOptions = defaultKeyboardOptions,
             keyboardActions = KeyboardActions(onNext = {
@@ -164,20 +160,22 @@ fun DetailScreenContent(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        if (viewModel.gifUrl.value != null) {
+        if (uiState.gifUrl != null) {
             Image(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable { onSelectGifClicked() },
+                    .clickable { onUiAction(UIAction.GifPickerRequested) },
                 painter = rememberAsyncImagePainter(
-                    model = viewModel.gifUrl.value!!,
+                    model = uiState.gifUrl,
                     imageLoader = imageLoader,
                     contentScale = ContentScale.FillBounds,
                 ),
                 contentDescription = "Gif"
             )
         } else {
-            Button(onClick = onSelectGifClicked) {
+            Button(
+                onClick = { onUiAction(UIAction.GifPickerRequested) },
+            ) {
                 Text("Add a GIF to this day")
             }
         }

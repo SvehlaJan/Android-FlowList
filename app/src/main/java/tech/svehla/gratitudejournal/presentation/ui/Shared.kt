@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import tech.svehla.gratitudejournal.domain.model.ErrorEntity
+import tech.svehla.gratitudejournal.domain.model.ErrorReason
 
 @Composable
 fun LoadingScreen() {
@@ -23,14 +23,14 @@ fun LoadingScreen() {
 
 @Composable
 fun ErrorScreen(
-    error: ErrorEntity?,
+    error: ErrorReason?,
     retry: () -> Unit
 ) {
     val errorMessage = when (error) {
-        is ErrorEntity.Network -> "Network error"
-        is ErrorEntity.NotFound -> "Not found"
-        is ErrorEntity.AccessDenied -> "Access denied"
-        is ErrorEntity.ServiceUnavailable -> "Service unavailable"
+        is ErrorReason.Network -> "Network error"
+        is ErrorReason.NotFound -> "Not found"
+        is ErrorReason.AccessDenied -> "Access denied"
+        is ErrorReason.ServiceUnavailable -> "Service unavailable"
         else -> "Unknown error"
     }
     Column(
