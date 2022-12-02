@@ -155,6 +155,12 @@ class FakeJournalDao : JournalDao {
         fakeJournalEntries.addAll(journalEntries)
     }
 
+    override fun getJournalEntryFlow(entryDate: String): Flow<JournalEntryEntity?> {
+        return flow {
+            emit(fakeJournalEntries.find { it.date == entryDate })
+        }
+    }
+
     override fun getJournalEntriesFlow(): Flow<List<JournalEntryEntity>> {
         return flow {
             emit(fakeJournalEntries)
