@@ -1,8 +1,7 @@
 package tech.svehla.gratitudejournal.data.remote
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import tech.svehla.gratitudejournal.domain.model.User
+import tech.svehla.gratitudejournal.domain.model.UserEntity
 
 interface AuthService {
     suspend fun signInAnonymously()
@@ -13,5 +12,5 @@ interface AuthService {
 
     val currentUserId: String?
 
-    val currentUserFlow: Flow<User?>
+    val currentUserFlow: Flow<UserEntity?>
 }

@@ -26,7 +26,7 @@ import tech.svehla.gratitudejournal.presentation.ui.theme.Shapes
  * Inspired by https://hadiyarajesh.medium.com/integrate-google-sign-in-with-jetpack-compose-ui-9f52776542ab
  */
 @Composable
-fun SignInButton(
+fun SignInWithGoogleButton(
     modifier: Modifier = Modifier,
     text: String,
     loadingText: String = "Signing in...",

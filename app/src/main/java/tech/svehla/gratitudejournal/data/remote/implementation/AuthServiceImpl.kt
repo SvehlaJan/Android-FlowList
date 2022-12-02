@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import tech.svehla.gratitudejournal.data.remote.AuthService
 import tech.svehla.gratitudejournal.data.remote.dto.toUser
-import tech.svehla.gratitudejournal.domain.model.User
+import tech.svehla.gratitudejournal.domain.model.UserEntity
 
 
 class AuthServiceImpl : AuthService {
     private val firebaseAuth = FirebaseAuth.getInstance()
 
     private val _currentUserStateFlow = MutableStateFlow<FirebaseUser?>(null)
-    override val currentUserFlow: Flow<User?> = _currentUserStateFlow.map { it?.toUser() }
+    override val currentUserFlow: Flow<UserEntity?> = _currentUserStateFlow.map { it?.toUser() }
 
     override val currentUserId: String?
         get() = firebaseAuth.currentUser?.uid

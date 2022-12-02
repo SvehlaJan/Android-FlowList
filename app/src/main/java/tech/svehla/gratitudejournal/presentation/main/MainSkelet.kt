@@ -179,9 +179,7 @@ fun AppNavHost(
             )
         }
         composable(NavScreen.Settings.route) {
-            SettingsScreen(
-                viewModel = hiltViewModel()
-            )
+            SettingsScreen()
         }
     }
 }

@@ -102,7 +102,6 @@ fun DetailScreenContent(
     @PreviewParameter(JournalEntryVODataProvider::class) journalEntry: JournalEntryVO,
     onUiAction: (UIAction) -> Unit = {},
 ) {
-
     val focusManager = LocalFocusManager.current
     val defaultKeyboardOptions = KeyboardOptions.Default.copy(
         capitalization = KeyboardCapitalization.Sentences,
