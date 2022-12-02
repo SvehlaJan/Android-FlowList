@@ -41,8 +41,7 @@ data class JournalEntry(
                 imageUrl == other.imageUrl &&
                 gifUrl == other.gifUrl &&
                 favoriteEntry == other.favoriteEntry &&
-                dayScore == other.dayScore &&
-                lastModified == other.lastModified
+                dayScore == other.dayScore
     }
 
     val formattedDate: String = formatDate(date)

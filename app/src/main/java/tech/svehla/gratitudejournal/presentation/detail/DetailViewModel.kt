@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.giphy.sdk.core.models.Media
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tech.svehla.gratitudejournal.common.Resource
+import tech.svehla.gratitudejournal.di.ApplicationScope
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.domain.use_case.detail.GetDetailUseCase
 import tech.svehla.gratitudejournal.domain.use_case.detail.SaveEntryUseCase
@@ -23,6 +25,7 @@ class DetailViewModel @Inject constructor(
     private val getDetailUseCase: GetDetailUseCase,
     private val saveEntryUseCase: SaveEntryUseCase,
     private val formDelegate: DetailScreenFormDelegate,
+    @ApplicationScope private val externalScope: CoroutineScope,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), DetailScreenFormDelegate by formDelegate {
 
@@ -60,18 +63,6 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun onBackPressed() {
-        viewModelScope.launch {
-            if (!formDelegate.hasChanges()) {
-                sendEvent(UIEvent.NavigateBack)
-                return@launch
-            }
-
-            saveEntryUseCase(formDelegate.getNewEntry())
-            sendEvent(UIEvent.NavigateBack)
-        }
-    }
-
     fun onSelectGifClicked() {
         _state.value = DetailScreenState(uiState = UIState.GifPicker)
     }
@@ -90,5 +81,13 @@ class DetailViewModel @Inject constructor(
     fun onEventConsumed(eventId: String) {
         val events = _state.value.events.filterNot { it.id == eventId }
         _state.value = _state.value.copy(events = events)
+    }
+
+    fun onStop() {
+        if (formDelegate.hasChanges()) {
+            externalScope.launch(Dispatchers.IO) {
+                saveEntryUseCase(formDelegate.getNewEntry())
+            }
+        }
     }
 }
