@@ -20,9 +20,8 @@ object RepositoryModule {
     fun provideMainRepository(
         journalDao: JournalDao,
         apiService: ApiService,
-        errorHandler: ErrorHandler
     ): MainRepository {
-        return MainRepositoryImpl(journalDao, apiService, errorHandler)
+        return MainRepositoryImpl(journalDao, apiService)
     }
 
     @Provides

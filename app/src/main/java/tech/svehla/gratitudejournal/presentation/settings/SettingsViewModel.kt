@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import tech.svehla.gratitudejournal.domain.repository.ErrorHandler
 import tech.svehla.gratitudejournal.domain.use_case.settings.CurrentUserUseCase
 import tech.svehla.gratitudejournal.domain.use_case.settings.SignInWithGoogleUseCase
 import tech.svehla.gratitudejournal.domain.use_case.settings.SignOutUseCase
@@ -18,11 +19,11 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val signOutUseCase: SignOutUseCase,
-    private val currentUserUseCase: CurrentUserUseCase
+    private val currentUserUseCase: CurrentUserUseCase,
+    private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<SettingsScreenState> =
-        MutableStateFlow(SettingsScreenState())
+    private val _state: MutableStateFlow<SettingsScreenState> = MutableStateFlow(SettingsScreenState())
     val state: StateFlow<SettingsScreenState> = _state
 
     init {
@@ -68,9 +69,7 @@ class SettingsViewModel @Inject constructor(
         _state.value = SettingsScreenState(isLoading = true)
     }
 
-    fun signOut() {
-        viewModelScope.launch {
-            signOutUseCase()
-        }
+    fun signOut() = viewModelScope.launch {
+        signOutUseCase()
     }
 }

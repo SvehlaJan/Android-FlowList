@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import tech.svehla.gratitudejournal.common.Resource
 import tech.svehla.gratitudejournal.di.ApplicationScope
 import tech.svehla.gratitudejournal.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.domain.repository.ErrorHandler
 import tech.svehla.gratitudejournal.domain.use_case.detail.GetDetailUseCase
 import tech.svehla.gratitudejournal.domain.use_case.detail.SaveEntryUseCase
 import tech.svehla.gratitudejournal.presentation.main.NavScreen
@@ -25,11 +26,11 @@ class DetailViewModel @Inject constructor(
     private val getDetailUseCase: GetDetailUseCase,
     private val saveEntryUseCase: SaveEntryUseCase,
     @ApplicationScope private val externalScope: CoroutineScope,
+    private val errorHandler: ErrorHandler,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<DetailScreenStateNew> =
-        MutableStateFlow(DetailScreenStateNew())
+    private val _state: MutableStateFlow<DetailScreenStateNew> = MutableStateFlow(DetailScreenStateNew())
     val state: StateFlow<DetailScreenStateNew> = _state
     private lateinit var _date: String
     private var initialJournalEntry: JournalEntryVO? = null
@@ -61,7 +62,7 @@ class DetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            errorReason = result.reason
+                            errorReason = errorHandler.processError(result.error)
                         )
                     }
                 }

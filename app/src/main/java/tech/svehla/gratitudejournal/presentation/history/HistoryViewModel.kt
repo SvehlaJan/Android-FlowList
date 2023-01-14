@@ -8,17 +8,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.svehla.gratitudejournal.common.Resource
+import tech.svehla.gratitudejournal.domain.repository.ErrorHandler
 import tech.svehla.gratitudejournal.domain.use_case.history.GetHistoryUseCase
 import tech.svehla.gratitudejournal.presentation.model.toVO
 import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private val getHistoryUseCase: GetHistoryUseCase
+    private val getHistoryUseCase: GetHistoryUseCase,
+    private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<HistoryScreenState> =
-        MutableStateFlow(HistoryScreenState())
+    private val _state: MutableStateFlow<HistoryScreenState> = MutableStateFlow(HistoryScreenState())
     val state: StateFlow<HistoryScreenState> = _state
 
     init {
@@ -36,7 +37,7 @@ class HistoryViewModel @Inject constructor(
                     _state.update { HistoryScreenState(isLoading = true) }
                 }
                 is Resource.Error -> {
-                    _state.update { HistoryScreenState(errorReason = result.reason) }
+                    _state.update { HistoryScreenState(errorReason = errorHandler.processError(result.error)) }
                 }
             }
         }
