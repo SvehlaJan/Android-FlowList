@@ -8,16 +8,18 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
-import tech.svehla.gratitudejournal.common.Resource
+import tech.svehla.gratitudejournal.core.data.model.Resource
 
-import tech.svehla.gratitudejournal.data.local.JournalDao
-import tech.svehla.gratitudejournal.data.local.entity.JournalEntryEntity
-import tech.svehla.gratitudejournal.data.local.entity.toJournalEntryEntity
-import tech.svehla.gratitudejournal.data.remote.ApiService
-import tech.svehla.gratitudejournal.data.remote.dto.JournalEntryDto
-import tech.svehla.gratitudejournal.data.remote.dto.toJournalEntryDto
-import tech.svehla.gratitudejournal.domain.model.JournalEntry
-import tech.svehla.gratitudejournal.domain.repository.ErrorHandler
+import tech.svehla.gratitudejournal.core.data.local.JournalDao
+import tech.svehla.gratitudejournal.core.data.local.entity.JournalEntryEntity
+import tech.svehla.gratitudejournal.core.data.local.entity.toJournalEntryEntity
+import tech.svehla.gratitudejournal.core.data.remote.ApiService
+import tech.svehla.gratitudejournal.core.data.remote.dto.JournalEntryDto
+import tech.svehla.gratitudejournal.core.data.remote.dto.toJournalEntryDto
+import tech.svehla.gratitudejournal.core.data.repository.GeneralErrorHandlerImpl
+import tech.svehla.gratitudejournal.core.data.repository.MainRepositoryImpl
+import tech.svehla.gratitudejournal.core.domain.model.JournalEntry
+import tech.svehla.gratitudejournal.core.domain.repository.ErrorHandler
 
 class MainRepositoryImplTest {
 
