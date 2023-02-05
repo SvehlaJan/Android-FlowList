@@ -4,7 +4,7 @@ import tech.svehla.gratitudejournal.core.domain.model.ErrorReason
 import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
 import java.util.*
 
-data class DetailScreenStateNew(
+data class DetailScreenState(
     val isLoading: Boolean = false,
     val content: JournalEntryVO? = null,
     val errorReason: ErrorReason? = null,
@@ -20,6 +20,7 @@ sealed class UIAction {
     data class FirstNoteUpdated(val value: String) : UIAction()
     data class SecondNoteUpdated(val value: String) : UIAction()
     data class ThirdNoteUpdated(val value: String) : UIAction()
+    object RefreshData : UIAction()
     object GifPickerRequested : UIAction()
     data class GifSelected(val url: String) : UIAction()
 }

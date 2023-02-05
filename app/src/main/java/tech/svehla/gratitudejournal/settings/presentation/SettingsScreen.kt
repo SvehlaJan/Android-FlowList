@@ -8,6 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -18,9 +21,9 @@ import tech.svehla.gratitudejournal.core.presentation.ui.util.AuthResultContract
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun SettingsScreen() {
-    val viewModel: SettingsViewModel = hiltViewModel()
-
+fun SettingsScreenRoute(
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
     val signInRequestCode = 1
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
@@ -29,7 +32,7 @@ fun SettingsScreen() {
 
     val state: SettingsScreenState by viewModel.state.collectAsStateWithLifecycle()
 
-    SettingsScreenContent(
+    SettingsScreen(
         state = state,
         onSignInClicked = {
             viewModel.onSignInClicked()
@@ -41,9 +44,10 @@ fun SettingsScreen() {
     )
 }
 
+@Preview(showBackground = true)
 @Composable
-fun SettingsScreenContent(
-    state: SettingsScreenState,
+fun SettingsScreen(
+    @PreviewParameter(SettingsScreenStateParameterProvider::class) state: SettingsScreenState,
     onSignOutClicked: () -> Unit = {},
     onSignInClicked: () -> Unit = {},
 ) {
@@ -127,4 +131,20 @@ fun SettingsScreenContent(
             }
         }
     }
+}
+
+object SettingsScreenStateParameterProvider : PreviewParameterProvider<SettingsScreenState> {
+    override val values: Sequence<SettingsScreenState>
+        get() = sequenceOf(
+            SettingsScreenState(
+                currentUser = null,
+                isLoading = false,
+                signInErrorMessage = null
+            ),
+            SettingsScreenState(
+                currentUser = null,
+                isLoading = true,
+                signInErrorMessage = null
+            ),
+        )
 }

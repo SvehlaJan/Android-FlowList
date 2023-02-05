@@ -13,7 +13,7 @@ import tech.svehla.gratitudejournal.core.data.model.Resource
 import tech.svehla.gratitudejournal.core.di.ApplicationScope
 import tech.svehla.gratitudejournal.core.domain.model.JournalEntry
 import tech.svehla.gratitudejournal.core.domain.repository.ErrorHandler
-import tech.svehla.gratitudejournal.core.presentation.NavScreen
+import tech.svehla.gratitudejournal.core.presentation.NavRoute
 import tech.svehla.gratitudejournal.detail.domain.GetDetailUseCase
 import tech.svehla.gratitudejournal.detail.domain.SaveEntryUseCase
 import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
@@ -25,24 +25,24 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     private val getDetailUseCase: GetDetailUseCase,
     private val saveEntryUseCase: SaveEntryUseCase,
-    @ApplicationScope private val externalScope: CoroutineScope,
     private val errorHandler: ErrorHandler,
+    @ApplicationScope private val externalScope: CoroutineScope,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<DetailScreenStateNew> = MutableStateFlow(DetailScreenStateNew())
-    val state: StateFlow<DetailScreenStateNew> = _state
+    private val _state: MutableStateFlow<DetailScreenState> = MutableStateFlow(DetailScreenState())
+    val state: StateFlow<DetailScreenState> = _state
     private lateinit var _date: String
     private var initialJournalEntry: JournalEntryVO? = null
 
     init {
-        savedStateHandle.get<String>(NavScreen.Detail.argument0)?.let { date ->
+        savedStateHandle.get<String>(NavRoute.Detail.argument0)?.let { date ->
             _date = date
         }
         loadDetail()
     }
 
-    fun loadDetail(date: String = _date) = viewModelScope.launch {
+    private fun loadDetail(date: String = _date) = viewModelScope.launch {
         getDetailUseCase(date).collect { result ->
             when (result) {
                 is Resource.Success -> {
@@ -103,6 +103,9 @@ class DetailViewModel @Inject constructor(
                         content = it.content?.copy(gifUrl = action.url)
                     )
                 }
+            }
+            UIAction.RefreshData -> {
+                loadDetail()
             }
         }
     }

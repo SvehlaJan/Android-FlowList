@@ -3,14 +3,7 @@ package tech.svehla.gratitudejournal.core.presentation
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -22,31 +15,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
+import androidx.navigation.*
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import tech.svehla.gratitudejournal.R
-import tech.svehla.gratitudejournal.detail.presentation.DetailScreen
-import tech.svehla.gratitudejournal.history.presentation.HistoryScreen
-import tech.svehla.gratitudejournal.settings.presentation.SettingsScreen
+import tech.svehla.gratitudejournal.detail.presentation.DetailScreenRoute
+import tech.svehla.gratitudejournal.history.presentation.HistoryScreenRoute
+import tech.svehla.gratitudejournal.settings.presentation.SettingsScreenRoute
 import java.time.LocalDate
 
 val items = listOf(
-    NavScreen.History,
-    NavScreen.Detail,
-    NavScreen.Settings
+    NavRoute.History,
+    NavRoute.Detail,
+    NavRoute.Settings
 )
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -111,8 +98,8 @@ fun AppBottomBar(
                 label = { Text(stringResource(screen.resourceId)) },
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 onClick = {
-                    val route = if (screen == NavScreen.Detail) {
-                        NavScreen.Detail.constructRoute(LocalDate.now().toString())
+                    val route = if (screen == NavRoute.Detail) {
+                        NavRoute.Detail.constructRoute(LocalDate.now().toString())
                     } else {
                         screen.route
                     }
@@ -136,7 +123,6 @@ fun AppBottomBar(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -145,55 +131,52 @@ fun AppNavHost(
 
     NavHost(
         navController,
-        startDestination = NavScreen.History.route,
+        startDestination = NavRoute.History.route,
         Modifier.padding(innerPadding)
     ) {
-        composable(NavScreen.History.route) {
-            HistoryScreen(
-//                viewModel = hiltViewModel()
-            ) {
-                navController.navigate("${NavScreen.Detail.route}/$it") {
+        composable(NavRoute.History.route) {
+            HistoryScreenRoute(
+                onNavigateToDetail = {
+                    navController.navigate("${NavRoute.Detail.route}/$it") {
 //                    popUpTo(NavScreen.History.route) {
 //                        inclusive = true
 //                    }
-                }
-            }
+                    }
+                },
+            )
         }
         composable(
-            route = NavScreen.Detail.routeWithArgument,
-            arguments = listOf(navArgument(NavScreen.Detail.argument0) {
+            route = NavRoute.Detail.routeWithArgument,
+            arguments = listOf(navArgument(NavRoute.Detail.argument0) {
                 type = NavType.StringType
                 defaultValue = LocalDate.now().toString()
             }),
         ) { backStackEntry ->
-            val date = backStackEntry.arguments?.getString(NavScreen.Detail.argument0)
+            val date = backStackEntry.arguments?.getString(NavRoute.Detail.argument0)
                 ?: return@composable
 
-
-            DetailScreen(
+            DetailScreenRoute(
                 date = date,
-                viewModel = hiltViewModel(),
                 onBackPressed = {
                     navController.navigateUp()
                 }
             )
         }
-        composable(NavScreen.Settings.route) {
-            SettingsScreen()
+        composable(NavRoute.Settings.route) {
+            SettingsScreenRoute()
         }
     }
 }
 
-sealed class NavScreen(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
-    object History : NavScreen("history", R.string.menu_history, Icons.Filled.List)
-    object Detail : NavScreen("detail", R.string.menu_journal, Icons.Filled.Add) {
+sealed class NavRoute(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
+    object History : NavRoute("history", R.string.menu_history, Icons.Filled.List)
+    object Detail : NavRoute("detail", R.string.menu_journal, Icons.Filled.Add) {
         const val routeWithArgument: String = "detail/{date}"
         const val argument0: String = "date"
         fun constructRoute(date: String): String {
             return "${route}/${date}"
         }
-
     }
 
-    object Settings : NavScreen("settings", R.string.menu_settings, Icons.Filled.Settings)
+    object Settings : NavRoute("settings", R.string.menu_settings, Icons.Filled.Settings)
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
@@ -35,12 +36,12 @@ import tech.svehla.gratitudejournal.core.presentation.ui.components.LoadingScree
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun DetailScreen(
+fun DetailScreenRoute(
+    viewModel: DetailViewModel = hiltViewModel(),
     date: String,
-    viewModel: DetailViewModel,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
-    val state: DetailScreenStateNew by viewModel.state.collectAsStateWithLifecycle()
+    val state: DetailScreenState by viewModel.state.collectAsStateWithLifecycle()
 
     state.events.firstOrNull()?.let { event ->
         LaunchedEffect(event) {
@@ -60,6 +61,17 @@ fun DetailScreen(
         }
     }
 
+    DetailScreen(
+        state = state,
+        onUiAction = { viewModel.onUiAction(it) },
+    )
+}
+
+@Composable
+fun DetailScreen(
+    state: DetailScreenState,
+    onUiAction: (UIAction) -> Unit,
+) {
     when {
         state.isLoading -> {
             LoadingScreen()
@@ -68,7 +80,7 @@ fun DetailScreen(
             ErrorScreen(
                 error = state.errorReason,
                 retry = {
-                    viewModel.loadDetail(date)
+                    onUiAction(UIAction.RefreshData)
                 }
             )
         }
@@ -77,16 +89,16 @@ fun DetailScreen(
                 modifier = Modifier.fillMaxSize(),
                 onMediaSelected = { media ->
                     media?.images?.original?.gifUrl?.let { url ->
-                        viewModel.onUiAction(UIAction.GifSelected(url))
+                        onUiAction(UIAction.GifSelected(url))
                     }
                 }
             )
         }
         state.content != null -> {
             DetailScreenContent(
-                journalEntry = state.content!!,
+                journalEntry = state.content,
                 onUiAction = {
-                    viewModel.onUiAction(it)
+                    onUiAction(it)
                 }
             )
         }

@@ -24,35 +24,51 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun HistoryScreen(
-    selectEntry: (String) -> Unit,
+fun HistoryScreenRoute(
+    viewModel: HistoryViewModel = hiltViewModel(),
+    onNavigateToDetail: (String) -> Unit,
 ) {
-    val viewModel: HistoryViewModel = hiltViewModel()
     val state: HistoryScreenState by viewModel.state.collectAsStateWithLifecycle()
 
+    HistoryScreen(
+        state = state,
+        onNavigateToDetail = onNavigateToDetail,
+        onRefresh = { viewModel.loadHistory() },
+    )
+}
+
+@Composable
+fun HistoryScreen(
+    state: HistoryScreenState,
+    onNavigateToDetail: (String) -> Unit,
+    onRefresh: () -> Unit,
+) {
     if (state.entries != null) {
-        val items = state.entries!!
+        val items = state.entries
         if (items.isEmpty()) {
             HistoryEmptyScreen(
-                selectEntry = selectEntry
+                onEntryClick = onNavigateToDetail
             )
         } else {
             HistoryListScreen(
                 items = items,
-                selectEntry = selectEntry
+                onEntryClick = onNavigateToDetail
             )
         }
     } else if (state.isLoading) {
         LoadingScreen()
     } else {
-        ErrorScreen(error = state.errorReason, retry = { viewModel.loadHistory() })
+        ErrorScreen(
+            error = state.errorReason,
+            retry = onRefresh,
+        )
     }
 }
 
 @Composable
 fun HistoryEmptyScreen(
     modifier: Modifier = Modifier,
-    selectEntry: (String) -> Unit = {}
+    onEntryClick: (String) -> Unit = {}
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -65,7 +81,7 @@ fun HistoryEmptyScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             val todayDateStr = LocalDate.now().toString()
-            selectEntry(todayDateStr)
+            onEntryClick(todayDateStr)
         }) {
             Text(text = "Let's do it!")
         }
@@ -76,7 +92,7 @@ fun HistoryEmptyScreen(
 fun HistoryListScreen(
     modifier: Modifier = Modifier,
     items: List<JournalEntryVO>,
-    selectEntry: (String) -> Unit = {},
+    onEntryClick: (String) -> Unit = {},
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -87,7 +103,7 @@ fun HistoryListScreen(
             HistoryEntry(
                 modifier = Modifier.fillMaxWidth(),
                 entry = item,
-                selectEntry = selectEntry
+                onEntryClick = onEntryClick
             )
         }
     }
@@ -97,12 +113,12 @@ fun HistoryListScreen(
 fun HistoryEntry(
     modifier: Modifier = Modifier,
     entry: JournalEntryVO,
-    selectEntry: (String) -> Unit = {},
+    onEntryClick: (String) -> Unit = {},
 ) {
     Card(
         modifier = modifier
             .padding(12.dp)
-            .clickable { selectEntry(entry.date) },
+            .clickable { onEntryClick(entry.date) },
         elevation = 10.dp
     ) {
         Column(
@@ -122,5 +138,4 @@ fun HistoryEntry(
             )
         }
     }
-
 }
