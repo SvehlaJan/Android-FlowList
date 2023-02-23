@@ -1,4 +1,4 @@
-package tech.svehla.gratitudejournal.core.domain.repository
+package tech.svehla.gratitudejournal.core.domain.util
 
 import tech.svehla.gratitudejournal.core.domain.model.ErrorReason
 

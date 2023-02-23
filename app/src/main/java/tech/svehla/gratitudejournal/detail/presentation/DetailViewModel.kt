@@ -9,25 +9,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.svehla.gratitudejournal.core.data.model.Resource
+import tech.svehla.gratitudejournal.core.data.remote.util.Resource
 import tech.svehla.gratitudejournal.core.di.ApplicationScope
 import tech.svehla.gratitudejournal.core.domain.model.JournalEntry
-import tech.svehla.gratitudejournal.core.domain.repository.ErrorHandler
 import tech.svehla.gratitudejournal.core.presentation.NavRoute
-import tech.svehla.gratitudejournal.detail.domain.GetDetailUseCase
-import tech.svehla.gratitudejournal.detail.domain.SaveEntryUseCase
 import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.core.presentation.model.toDomain
 import tech.svehla.gratitudejournal.core.presentation.model.toVO
+import tech.svehla.gratitudejournal.detail.domain.GetDetailUseCase
+import tech.svehla.gratitudejournal.detail.domain.SaveEntryUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val getDetailUseCase: GetDetailUseCase,
     private val saveEntryUseCase: SaveEntryUseCase,
-    private val errorHandler: ErrorHandler,
     @ApplicationScope private val externalScope: CoroutineScope,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<DetailScreenState> = MutableStateFlow(DetailScreenState())
@@ -54,18 +52,20 @@ class DetailViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             errorReason = null,
-                            content = vo
+                            content = vo,
                         )
                     }
                 }
+
                 is Resource.Error -> {
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            errorReason = errorHandler.processError(result.error)
+                            errorReason = result.error,
                         )
                     }
                 }
+
                 is Resource.Loading -> {
                     _state.update { it.copy(isLoading = true) }
                 }
@@ -87,15 +87,19 @@ class DetailViewModel @Inject constructor(
             is UIAction.FirstNoteUpdated -> {
                 _state.update { it.copy(content = it.content?.copy(firstNote = action.value)) }
             }
+
             is UIAction.SecondNoteUpdated -> {
                 _state.update { it.copy(content = it.content?.copy(secondNote = action.value)) }
             }
+
             is UIAction.ThirdNoteUpdated -> {
                 _state.update { it.copy(content = it.content?.copy(thirdNote = action.value)) }
             }
+
             UIAction.GifPickerRequested -> {
                 _state.update { it.copy(showGifPicker = true) }
             }
+
             is UIAction.GifSelected -> {
                 _state.update {
                     it.copy(
@@ -104,6 +108,7 @@ class DetailViewModel @Inject constructor(
                     )
                 }
             }
+
             UIAction.RefreshData -> {
                 loadDetail()
             }

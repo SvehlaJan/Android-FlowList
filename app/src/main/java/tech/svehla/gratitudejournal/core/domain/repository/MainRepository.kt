@@ -1,7 +1,7 @@
 package tech.svehla.gratitudejournal.core.domain.repository
 
 import kotlinx.coroutines.flow.Flow
-import tech.svehla.gratitudejournal.core.data.model.Resource
+import tech.svehla.gratitudejournal.core.data.remote.util.Resource
 import tech.svehla.gratitudejournal.core.domain.model.JournalEntry
 
 interface MainRepository {

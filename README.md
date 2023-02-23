@@ -20,13 +20,13 @@ Dependency injection is handled with Hilt.
 
 Asynchronous tasks and handling of data is done with Kotlin Flows + Coroutines.
 
-Firebase Firestore is used ONLY for remote data storage - instead of REST API. Firestore has great caching capabilities but for demonstration purposes it is not used.
+REST API calls are done with Ktor and Kotlinx Serialization.
 
 Caching is done in the local database, with use of Room.
 
 If the user isn't signed in, only the local data is available.
 
-If the user signs in, the database will be filled with entries from Firebase Firestore.
+If the user signs in, the database will be filled with entries from API.
 
 For authentication, Firebase Auth is used.
 
@@ -48,8 +48,7 @@ For selecting a GIF image, the app uses the Giphy.
 
 ## Future development:
 
-- Functionality to migrate existing local data to Firestore after sign-in
+- Functionality to migrate existing local data to remote after sign-in
 - CI/CD
-- Replace Firebase Firestore with REST API
 - Delete entry from history
 - Lazy loading for history

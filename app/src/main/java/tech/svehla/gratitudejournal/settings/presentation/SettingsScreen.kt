@@ -40,7 +40,7 @@ fun SettingsScreenRoute(
         },
         onSignOutClicked = {
             viewModel.signOut()
-        }
+        },
     )
 }
 

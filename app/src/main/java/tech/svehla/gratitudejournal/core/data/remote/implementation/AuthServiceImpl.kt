@@ -17,6 +17,9 @@ class AuthServiceImpl : AuthService {
 
     private val _currentUserStateFlow = MutableStateFlow<FirebaseUser?>(null)
     override val currentUserFlow: Flow<User?> = _currentUserStateFlow.map { it?.toUser() }
+    private var _currentToken: String? = null
+    override val currentToken: String?
+        get() = _currentToken
 
     override val currentUserId: String?
         get() = firebaseAuth.currentUser?.uid
@@ -24,6 +27,11 @@ class AuthServiceImpl : AuthService {
     init {
         firebaseAuth.addAuthStateListener {
             _currentUserStateFlow.tryEmit(it.currentUser)
+            it.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _currentToken = task.result?.token
+                }
+            }
         }
     }
 

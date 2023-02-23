@@ -13,4 +13,6 @@ interface AuthService {
     val currentUserId: String?
 
     val currentUserFlow: Flow<User?>
+
+    val currentToken: String?
 }

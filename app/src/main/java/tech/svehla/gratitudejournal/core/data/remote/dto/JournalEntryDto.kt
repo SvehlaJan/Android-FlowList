@@ -1,22 +1,22 @@
 package tech.svehla.gratitudejournal.core.data.remote.dto
 
-import com.google.firebase.firestore.DocumentId
-import com.google.firebase.firestore.PropertyName
+import kotlinx.serialization.Serializable
 import tech.svehla.gratitudejournal.core.data.local.entity.JournalEntryEntity
 import tech.svehla.gratitudejournal.core.domain.model.JournalEntry
 import java.time.LocalDate
 
 
+@Serializable
 data class JournalEntryDto(
-    @DocumentId var date: String = "",
-    @get: PropertyName("entry_1") @set: PropertyName("entry_1") var firstNote: String? = "",
-    @get: PropertyName("entry_2") @set: PropertyName("entry_2") var secondNote: String? = "",
-    @get: PropertyName("entry_3") @set: PropertyName("entry_3") var thirdNote: String? = "",
-    @get: PropertyName("image_url") @set: PropertyName("image_url") var imageUrl: String? = "",
-    @get: PropertyName("gif_url") @set: PropertyName("gif_url") var gifUrl: String? = "",
-    @get: PropertyName("favorite_entry") @set: PropertyName("favorite_entry") var favoriteEntry: Int? = 0,
-    @get: PropertyName("day_score") @set: PropertyName("day_score") var dayScore: Int? = 0,
-    @get: PropertyName("date_modified") @set: PropertyName("date_modified") var lastModified: String? = ""
+    val date: String,
+    val firstNote: String? = "",
+    val secondNote: String? = "",
+    val thirdNote: String? = "",
+    val imageUrl: String? = "",
+    val gifUrl: String? = "",
+    val favoriteEntry: Int? = 0,
+    val dayScore: Int? = 0,
+    val lastModified: String? = "",
 ) {
     fun toJournalEntry(): JournalEntry {
         return JournalEntry(
@@ -28,7 +28,7 @@ data class JournalEntryDto(
             gifUrl = gifUrl ?: "",
             favoriteEntry = favoriteEntry ?: -1,
             dayScore = dayScore ?: -1,
-            lastModified = lastModified ?: LocalDate.now().toString()
+            lastModified = lastModified ?: LocalDate.now().toString(),
         )
     }
 
@@ -42,7 +42,7 @@ data class JournalEntryDto(
             gifUrl = gifUrl ?: "",
             favoriteEntry = favoriteEntry ?: -1,
             dayScore = dayScore ?: -1,
-            lastModified = lastModified ?: LocalDate.now().toString()
+            lastModified = lastModified ?: LocalDate.now().toString(),
         )
     }
 }
@@ -57,6 +57,6 @@ fun JournalEntry.toJournalEntryDto(): JournalEntryDto {
         gifUrl = gifUrl,
         favoriteEntry = favoriteEntry,
         dayScore = dayScore,
-        lastModified = lastModified
+        lastModified = lastModified,
     )
 }

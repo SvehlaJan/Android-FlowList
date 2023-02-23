@@ -13,6 +13,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
 }
@@ -131,13 +132,9 @@ dependencies {
     implementation(libs.compose.navigation)
     debugImplementation(libs.compose.toolingpreview)
     implementation(libs.androidx.lifecycle.runtime.compose)
-//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycleVersion")
-//    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03")
-//    debugImplementation("androidx.compose.ui:ui-test-manifest:$versions.composeVersion")
 
     implementation(libs.playservices.auth)
     implementation(libs.playservices.coroutines)
-    implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
 
     implementation(libs.androidx.room.runtime)
@@ -155,9 +152,9 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // network
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.logging)
 
     // logging
     implementation(libs.timber)

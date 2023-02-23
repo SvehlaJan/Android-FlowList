@@ -1,23 +1,23 @@
-package tech.svehla.gratitudejournal.core.data.repository
+package tech.svehla.gratitudejournal.core.data.remote.util
 
-import retrofit2.HttpException
+import io.ktor.client.features.ClientRequestException
+import kotlinx.serialization.SerializationException
 import tech.svehla.gratitudejournal.core.domain.model.ErrorReason
-import tech.svehla.gratitudejournal.core.domain.repository.ErrorHandler
+import tech.svehla.gratitudejournal.core.domain.util.ErrorHandler
 import java.io.IOException
 import java.net.HttpURLConnection
-import javax.inject.Inject
 
-class GeneralErrorHandlerImpl @Inject constructor() : ErrorHandler {
+class ErrorHandlerImpl: ErrorHandler {
     override fun processError(throwable: Throwable): ErrorReason {
         return when (throwable) {
             is IOException -> ErrorReason.Network
-            is HttpException -> {
-                when (throwable.code()) {
+            is ClientRequestException -> {
+                when (throwable.response.status.value) {
                     // not found
                     HttpURLConnection.HTTP_NOT_FOUND -> ErrorReason.NotFound
 
                     // access denied
-                    HttpURLConnection.HTTP_FORBIDDEN -> ErrorReason.AccessDenied
+                    HttpURLConnection.HTTP_UNAUTHORIZED, HttpURLConnection.HTTP_FORBIDDEN -> ErrorReason.AccessDenied
 
                     // unavailable service
                     HttpURLConnection.HTTP_UNAVAILABLE -> ErrorReason.ServiceUnavailable
@@ -26,6 +26,7 @@ class GeneralErrorHandlerImpl @Inject constructor() : ErrorHandler {
                     else -> ErrorReason.Unknown
                 }
             }
+            is SerializationException -> ErrorReason.DataParsing
             else -> ErrorReason.Unknown
         }
     }

@@ -6,4 +6,5 @@ sealed class ErrorReason {
     object AccessDenied : ErrorReason()
     object ServiceUnavailable : ErrorReason()
     object Unknown : ErrorReason()
+    object DataParsing : ErrorReason()
 }

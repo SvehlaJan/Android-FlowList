@@ -8,18 +8,19 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
-import tech.svehla.gratitudejournal.core.data.model.Resource
-
 import tech.svehla.gratitudejournal.core.data.local.JournalDao
 import tech.svehla.gratitudejournal.core.data.local.entity.JournalEntryEntity
 import tech.svehla.gratitudejournal.core.data.local.entity.toJournalEntryEntity
 import tech.svehla.gratitudejournal.core.data.remote.ApiService
+import tech.svehla.gratitudejournal.core.data.remote.dto.JournalEntriesResponse
 import tech.svehla.gratitudejournal.core.data.remote.dto.JournalEntryDto
+import tech.svehla.gratitudejournal.core.data.remote.dto.JournalEntryResponse
 import tech.svehla.gratitudejournal.core.data.remote.dto.toJournalEntryDto
-import tech.svehla.gratitudejournal.core.data.repository.GeneralErrorHandlerImpl
+import tech.svehla.gratitudejournal.core.data.remote.util.ErrorHandlerImpl
+import tech.svehla.gratitudejournal.core.data.remote.util.Resource
 import tech.svehla.gratitudejournal.core.data.repository.MainRepositoryImpl
 import tech.svehla.gratitudejournal.core.domain.model.JournalEntry
-import tech.svehla.gratitudejournal.core.domain.repository.ErrorHandler
+import tech.svehla.gratitudejournal.core.domain.util.ErrorHandler
 
 class MainRepositoryImplTest {
 
@@ -32,7 +33,7 @@ class MainRepositoryImplTest {
     fun setUp() {
         fakeJournalDao = FakeJournalDao()
         fakeApiService = FakeApiService()
-        errorHandler = GeneralErrorHandlerImpl()
+        errorHandler = ErrorHandlerImpl()
         mainRepositoryImpl = MainRepositoryImpl(fakeJournalDao, fakeApiService, errorHandler)
     }
 
@@ -143,7 +144,7 @@ class MainRepositoryImplTest {
 
     private suspend fun <T> assertResourceSequence(
         flowTurbine: ReceiveTurbine<T>,
-        expectedResources: List<T>
+        expectedResources: List<T>,
     ) {
         expectedResources.forEach {
             val emission = flowTurbine.awaitItem()
@@ -188,12 +189,12 @@ class FakeJournalDao : JournalDao {
 class FakeApiService : ApiService {
     val fakeJournalEntries = mutableListOf<JournalEntryDto>()
 
-    override suspend fun fetchJournalEntries(): List<JournalEntryDto> {
-        return fakeJournalEntries
+    override suspend fun fetchJournalEntries(): JournalEntriesResponse {
+        return JournalEntriesResponse(fakeJournalEntries)
     }
 
-    override suspend fun fetchJournalEntry(date: String): JournalEntryDto? {
-        return fakeJournalEntries.find { it.date == date }
+    override suspend fun fetchJournalEntry(date: String): JournalEntryResponse {
+        return JournalEntryResponse(fakeJournalEntries.find { it.date == date })
     }
 
     override suspend fun saveJournalEntry(entry: JournalEntryDto) {

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.dependencyanalysis)
+    alias(libs.plugins.kotlinserialization)
 }
 buildscript {
     repositories {

@@ -21,7 +21,6 @@ lifecycle_runtime_compose = "2.6.0-alpha01"
 google_services = "4.3.14"
 playservices_auth = "20.4.0"
 playservices_coroutines = "1.6.4"
-firebase_firestore = "24.4.1"
 firebase_auth = "21.1.0"
 
 # Compose
@@ -34,8 +33,7 @@ compose_activity = "1.6.1"
 room = "2.4.3"
 
 # Network
-retrofit = "2.9.0"
-okhttp = "5.0.0-alpha.10"
+ktor_client = "1.6.4"
 
 # Other
 coil = "2.2.2"
@@ -84,7 +82,6 @@ compose_material = { module = "androidx.compose.material:material", version.ref 
 google_services = { module = "com.google.gms:google-services", version.ref = "google_services" }
 playservices_auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playservices_auth" }
 playservices_coroutines = { module = "com.google.android.gms:play-services-auth-api-phone", version.ref = "playservices_coroutines" }
-firebase_firestore = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebase_firestore" }
 firebase_auth = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebase_auth" }
 
 # Room
@@ -94,9 +91,9 @@ androidx_room_ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx_room_test = { module = "androidx.room:room-testing", version.ref = "room" }
 
 # Network
-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-retrofit_converter_gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
-okhttp_logging_interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+ktor_client_android = { module = "io.ktor:ktor-client-android", version.ref = "ktor_client" }
+ktor_client_serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor_client" }
+ktor_client_logging = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor_client" }
 
 # Other
 coil_compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
@@ -120,5 +117,5 @@ composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "com
 compose = ["compose.ui", "compose.toolingpreview"]
 
 [plugins]
-kotlin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinserialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 dependencyanalysis = {id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyanalysis"}

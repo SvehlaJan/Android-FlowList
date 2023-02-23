@@ -24,7 +24,9 @@ fun ErrorScreen(
         is ErrorReason.NotFound -> "Not found"
         is ErrorReason.AccessDenied -> "Access denied"
         is ErrorReason.ServiceUnavailable -> "Service unavailable"
-        else -> "Unknown error"
+        is ErrorReason.DataParsing -> "Data parsing error"
+        is ErrorReason.Unknown -> "Unknown error"
+        null -> "Unknown error"
     }
     Column(
         modifier = modifier.fillMaxSize(),
