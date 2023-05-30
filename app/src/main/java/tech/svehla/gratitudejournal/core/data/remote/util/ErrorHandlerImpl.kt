@@ -4,11 +4,13 @@ import io.ktor.client.features.ClientRequestException
 import kotlinx.serialization.SerializationException
 import tech.svehla.gratitudejournal.core.domain.model.ErrorReason
 import tech.svehla.gratitudejournal.core.domain.util.ErrorHandler
+import timber.log.Timber
 import java.io.IOException
 import java.net.HttpURLConnection
 
 class ErrorHandlerImpl: ErrorHandler {
     override fun processError(throwable: Throwable): ErrorReason {
+        Timber.e(throwable, "Handling error")
         return when (throwable) {
             is IOException -> ErrorReason.Network
             is ClientRequestException -> {

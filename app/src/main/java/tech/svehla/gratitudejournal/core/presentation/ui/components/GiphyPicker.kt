@@ -33,7 +33,8 @@ import tech.svehla.gratitudejournal.core.presentation.ui.view.GiphyLoadingDrawab
 @Composable
 fun GiphyPicker(
     modifier: Modifier = Modifier,
-    onMediaSelected: (Media?) -> Unit
+    onMediaSelected: (Media?) -> Unit,
+    onPickerDismissed: () -> Unit,
 ) {
     val focusRequester = FocusRequester()
     var searchQuery by remember { mutableStateOf("") }
@@ -44,7 +45,7 @@ fun GiphyPicker(
     }
 
     BackHandler {
-        onMediaSelected(null)
+        onPickerDismissed()
     }
 
     Column(
@@ -78,10 +79,13 @@ fun GiphyPicker(
                     }
 
                     setGiphyLoadingProvider(loadingProviderClient)
-                    content = GPHContent.recents
                 }
             }, update = { view ->
-                view.content = GPHContent.searchQuery(searchQuery, mediaType = MediaType.gif)
+                if (searchQuery.isEmpty()) {
+                    view.content = GPHContent.trendingGifs
+                } else {
+                    view.content = GPHContent.searchQuery(searchQuery, mediaType = MediaType.gif)
+                }
             })
         TextField(
             modifier = Modifier

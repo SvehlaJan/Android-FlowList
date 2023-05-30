@@ -136,6 +136,7 @@ dependencies {
     implementation(libs.playservices.auth)
     implementation(libs.playservices.coroutines)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

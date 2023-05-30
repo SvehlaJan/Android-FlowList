@@ -59,7 +59,7 @@ fun HistoryScreen(
         LoadingScreen()
     } else {
         ErrorScreen(
-            error = state.errorReason,
+            error = state.error,
             retry = onRefresh,
         )
     }
@@ -68,7 +68,7 @@ fun HistoryScreen(
 @Composable
 fun HistoryEmptyScreen(
     modifier: Modifier = Modifier,
-    onEntryClick: (String) -> Unit = {}
+    onEntryClick: (String) -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -97,7 +97,9 @@ fun HistoryListScreen(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         state = rememberLazyListState(),
-        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
+        contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         items(items) { item ->
             HistoryEntry(
@@ -117,7 +119,7 @@ fun HistoryEntry(
 ) {
     Card(
         modifier = modifier
-            .padding(12.dp)
+            .padding(horizontal = 8.dp)
             .clickable { onEntryClick(entry.date) },
         elevation = 10.dp
     ) {

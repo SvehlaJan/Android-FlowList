@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -76,14 +77,16 @@ fun DetailScreen(
         state.isLoading -> {
             LoadingScreen()
         }
-        state.errorReason != null -> {
+
+        state.error != null -> {
             ErrorScreen(
-                error = state.errorReason,
+                error = state.error,
                 retry = {
                     onUiAction(UIAction.RefreshData)
                 }
             )
         }
+
         state.showGifPicker -> {
             GiphyPicker(
                 modifier = Modifier.fillMaxSize(),
@@ -91,9 +94,13 @@ fun DetailScreen(
                     media?.images?.original?.gifUrl?.let { url ->
                         onUiAction(UIAction.GifSelected(url))
                     }
-                }
+                },
+                onPickerDismissed = {
+                    onUiAction(UIAction.GifPickerDismissed)
+                },
             )
         }
+
         state.content != null -> {
             DetailScreenContent(
                 journalEntry = state.content,
@@ -131,7 +138,7 @@ fun DetailScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(8.dp),
     ) {
         Text(
             text = journalEntry.formattedDate(),
@@ -191,4 +198,19 @@ fun DetailScreenContent(
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun DetailScreenContentPreview() {
+    DetailScreenContent(
+        journalEntry = JournalEntryVO(
+            date = "2021-01-01",
+            firstNote = "First Note",
+            secondNote = "Second Note",
+            thirdNote = "Third Note",
+            gifUrl = "https://media.giphy.com/media/3o7aD2X9Y5WVqU9s52/giphy.gif",
+            imageUrl = null,
+        )
+    )
 }

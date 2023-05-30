@@ -37,7 +37,7 @@ class HistoryViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    _state.update { HistoryScreenState(errorReason = result.error) }
+                    _state.update { HistoryScreenState(error = result.error) }
                 }
             }
         }

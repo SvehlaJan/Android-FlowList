@@ -51,7 +51,7 @@ class DetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            errorReason = null,
+                            error = null,
                             content = vo,
                         )
                     }
@@ -61,7 +61,7 @@ class DetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            errorReason = result.error,
+                            error = result.error,
                         )
                     }
                 }
@@ -85,26 +85,34 @@ class DetailViewModel @Inject constructor(
     fun onUiAction(action: UIAction) {
         when (action) {
             is UIAction.FirstNoteUpdated -> {
-                _state.update { it.copy(content = it.content?.copy(firstNote = action.value)) }
+                val newContent = _state.value.content?.copy(firstNote = action.value)
+                _state.update { it.copy(content = newContent) }
             }
 
             is UIAction.SecondNoteUpdated -> {
-                _state.update { it.copy(content = it.content?.copy(secondNote = action.value)) }
+                val newContent = _state.value.content?.copy(secondNote = action.value)
+                _state.update { it.copy(content = newContent) }
             }
 
             is UIAction.ThirdNoteUpdated -> {
-                _state.update { it.copy(content = it.content?.copy(thirdNote = action.value)) }
+                val newContent = _state.value.content?.copy(thirdNote = action.value)
+                _state.update { it.copy(content = newContent) }
             }
 
-            UIAction.GifPickerRequested -> {
+            is UIAction.GifPickerRequested -> {
                 _state.update { it.copy(showGifPicker = true) }
             }
 
+            is UIAction.GifPickerDismissed -> {
+                _state.update { it.copy(showGifPicker = false) }
+            }
+
             is UIAction.GifSelected -> {
+                val newContent = _state.value.content?.copy(gifUrl = action.url)
                 _state.update {
                     it.copy(
                         showGifPicker = false,
-                        content = it.content?.copy(gifUrl = action.url)
+                        content = newContent,
                     )
                 }
             }

@@ -6,5 +6,5 @@ import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
 data class HistoryScreenState(
     val entries: List<JournalEntryVO>? = null,
     val isLoading: Boolean = false,
-    val errorReason: ErrorReason? = null
+    val error: ErrorReason? = null
 )
