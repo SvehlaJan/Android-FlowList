@@ -1,52 +1,54 @@
 [versions]
 # Project
-android_gradle_plugin = "7.4.0-rc03"
-kotlin = "1.7.20"
+android_gradle_plugin = "8.2.2"
+kotlin = "1.9.0"
 
 # Plugins
 dependencyanalysis = "1.18.0"
 
 # Dependency injection
-hilt = "2.44.2"
-hilt_navigation_compose = "1.0.0"
+hilt = "2.52"
+hilt_navigation_compose = "1.2.0"
 
 # KotlinX
-kotlinx_coroutines = "1.6.4"
+kotlinx_coroutines = "1.9.0"
 
 # AndroidX
-androidx_corektx = "1.9.0"
-lifecycle_runtime_compose = "2.6.0-alpha01"
+androidx_corektx = "1.13.1"
+androidx_activity = "1.9.2"
+lifecycle_runtime_compose = "2.8.6"
 
 # Google Play Services
-google_services = "4.3.14"
-playservices_auth = "20.4.0"
-playservices_coroutines = "1.6.4"
-firebase_auth = "21.1.0"
-firebase_firestore = "24.4.1"
+google_services = "4.4.2"
+playservices_auth = "21.2.0"
+playservices_coroutines = "18.1.0"
+firebase_auth = "23.0.0"
+firebase_firestore = "25.1.0"
 
 # Compose
-compose = "1.3.2"
-compose_material = "1.3.1"
-compose_nav = "2.5.3"
-compose_activity = "1.6.1"
+compose = "1.7.3"
+compose_material = "1.7.3"
+compose_material3 = "1.3.0"
+compose_nav = "2.8.2"
+compose_activity = "1.9.2"
 
 # Room
-room = "2.4.3"
+room = "2.6.1"
 
 # Network
-ktor_client = "1.6.4"
+ktor_client = "2.3.12"
 
 # Other
-coil = "2.2.2"
+coil = "2.7.0"
 timber = "5.0.1"
-giphy = "2.3.4"
+giphy = "2.3.15"
 
 # Test
 test_junit = "4.13.2"
-test_turbine = "0.12.1"
-test_truth = "1.1.3"
+test_turbine = "1.1.0"
+test_truth = "1.4.4"
 test_mockk = "1.13.3"
-test_junitext = "1.1.4"
+test_junitext = "1.2.1"
 
 # Quality
 ktlint = "0.48.0"
@@ -70,6 +72,7 @@ kotlinx_coroutines_test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 
 # AndroidX
 androidx_corektx = { module = "androidx.core:core-ktx", version.ref = "androidx_corektx" }
+androidx_activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx_activity" }
 androidx_lifecycle_runtime_compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle_runtime_compose" }
 
 # Compose
@@ -78,6 +81,7 @@ compose_toolingpreview = { module = "androidx.compose.ui:ui-tooling-preview", ve
 compose_navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose_nav" }
 compose_activity = { module = "androidx.activity:activity-compose", version.ref = "compose_activity" }
 compose_material = { module = "androidx.compose.material:material", version.ref = "compose_material" }
+compose_material3 = { module = "androidx.compose.material3:material3", version.ref = "compose_material3" }
 
 # Google Play Services
 google_services = { module = "com.google.gms:google-services", version.ref = "google_services" }
@@ -94,7 +98,13 @@ androidx_room_test = { module = "androidx.room:room-testing", version.ref = "roo
 
 # Network
 ktor_client_android = { module = "io.ktor:ktor-client-android", version.ref = "ktor_client" }
+ktor_client_core = { module = "io.ktor:ktor-client-core", version.ref = "ktor_client" }
+ktor_client_cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor_client" }
+ktor_client_okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor_client" }
+ktor_client_darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor_client" }
 ktor_client_serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor_client" }
+ktor_serialization_kotlinx_json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor_client" }
+ktor_client_content_negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor_client" }
 ktor_client_logging = { module = "io.ktor:ktor-client-logging-jvm", version.ref = "ktor_client" }
 
 # Other

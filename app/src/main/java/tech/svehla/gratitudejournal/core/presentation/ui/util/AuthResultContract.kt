@@ -1,6 +1,5 @@
 package tech.svehla.gratitudejournal.core.presentation.ui.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
@@ -13,10 +12,6 @@ class AuthResultContract : ActivityResultContract<Int, Task<GoogleSignInAccount>
         getGoogleSignInClient(context).signInIntent.putExtra("input", input)
 
     override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount> {
-        val result = GoogleSignIn.getSignedInAccountFromIntent(intent)
-        return when (resultCode) {
-            Activity.RESULT_OK -> result
-            else -> throw RuntimeException("Failed to sign in")
-        }
+        return GoogleSignIn.getSignedInAccountFromIntent(intent)
     }
 }

@@ -1,5 +1,6 @@
 package tech.svehla.gratitudejournal.detail.presentation
 
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -119,6 +120,18 @@ class DetailViewModel @Inject constructor(
 
             UIAction.RefreshData -> {
                 loadDetail()
+            }
+
+            UIAction.DateClicked -> {
+                _state.update { it.copy(showDatePicker = true) }
+            }
+
+            is UIAction.DateSelected -> {
+                _state.update { it.copy(showDatePicker = false) }
+                action.date?.let { date ->
+                    _date = date.toString()
+                    loadDetail(_date)
+                }
             }
         }
     }

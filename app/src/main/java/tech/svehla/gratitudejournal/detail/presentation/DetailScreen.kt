@@ -4,12 +4,18 @@ import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -18,13 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
@@ -34,8 +40,12 @@ import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.core.presentation.ui.components.ErrorScreen
 import tech.svehla.gratitudejournal.core.presentation.ui.components.GiphyPicker
 import tech.svehla.gratitudejournal.core.presentation.ui.components.LoadingScreen
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.util.Date
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun DetailScreenRoute(
     viewModel: DetailViewModel = hiltViewModel(),
@@ -68,6 +78,7 @@ fun DetailScreenRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     state: DetailScreenState,
@@ -83,7 +94,7 @@ fun DetailScreen(
                 error = state.error,
                 retry = {
                     onUiAction(UIAction.RefreshData)
-                }
+                },
             )
         }
 
@@ -101,12 +112,42 @@ fun DetailScreen(
             )
         }
 
+        state.showDatePicker -> {
+            val selectedDateMillis = state.content?.date?.let { dateStr ->
+                LocalDate.parse(dateStr).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+            }
+            val datePickerState = rememberDatePickerState(
+                initialSelectedDateMillis = selectedDateMillis,
+                selectableDates = object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        return utcTimeMillis <= System.currentTimeMillis()
+                    }
+                },
+            )
+            DatePickerDialog(
+                onDismissRequest = { onUiAction(UIAction.DateSelected(null)) },
+                confirmButton = {
+                    Button(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val date = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                            onUiAction(UIAction.DateSelected(date))
+                        }
+                    }) {
+                        Text("Confirm")
+                    }
+                },
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
+
         state.content != null -> {
             DetailScreenContent(
                 journalEntry = state.content,
                 onUiAction = {
                     onUiAction(it)
-                }
+                },
             )
         }
     }
@@ -120,30 +161,31 @@ fun DetailScreenContent(
     val focusManager = LocalFocusManager.current
     val defaultKeyboardOptions = KeyboardOptions.Default.copy(
         capitalization = KeyboardCapitalization.Sentences,
-        autoCorrect = false,
+        autoCorrectEnabled = false,
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Next
     )
     val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context)
-        .components {
-            if (SDK_INT >= 28) {
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                add(GifDecoder.Factory())
-            }
+    val imageLoader = ImageLoader.Builder(context).components {
+        if (SDK_INT >= 28) {
+            add(ImageDecoderDecoder.Factory())
+        } else {
+            add(GifDecoder.Factory())
         }
-        .build()
+    }.build()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
     ) {
-        Text(
-            text = journalEntry.formattedDate(),
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+        ClickableText(
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+            text = AnnotatedString(journalEntry.formattedDate()),
+            style = MaterialTheme.typography.headlineMedium,
+            onClick = {
+                onUiAction(UIAction.DateClicked)
+            },
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),

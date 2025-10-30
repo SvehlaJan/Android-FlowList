@@ -5,24 +5,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.core.presentation.ui.components.ErrorScreen
 import tech.svehla.gratitudejournal.core.presentation.ui.components.LoadingScreen
 import java.time.LocalDate
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun HistoryScreenRoute(
     viewModel: HistoryViewModel = hiltViewModel(),
@@ -121,7 +119,6 @@ fun HistoryEntry(
         modifier = modifier
             .padding(horizontal = 8.dp)
             .clickable { onEntryClick(entry.date) },
-        elevation = 10.dp
     ) {
         Column(
             modifier = Modifier
@@ -129,14 +126,14 @@ fun HistoryEntry(
         ) {
             Text(
                 text = entry.firstNote,
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.bodyMedium
             )
             Text(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .align(Alignment.End),
                 text = entry.formattedDate(),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }

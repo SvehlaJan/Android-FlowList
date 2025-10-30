@@ -2,7 +2,10 @@ package tech.svehla.gratitudejournal.settings.presentation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -13,13 +16,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.svehla.gratitudejournal.R
 import tech.svehla.gratitudejournal.core.presentation.ui.components.SignInWithGoogleButton
 import tech.svehla.gratitudejournal.core.presentation.ui.util.AuthResultContract
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun SettingsScreenRoute(
     viewModel: SettingsViewModel = hiltViewModel()
@@ -60,7 +61,6 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            elevation = 10.dp
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -68,7 +68,7 @@ fun SettingsScreen(
                 if (state.currentUser != null) {
                     Text(
                         text = "Logged in as ${state.currentUser.email}",
-                        style = MaterialTheme.typography.body1
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(Modifier.height(32.dp))
                     Button(
@@ -80,7 +80,7 @@ fun SettingsScreen(
                 } else {
                     Text(
                         text = "Sign in to sync your journal entries across devices",
-                        style = MaterialTheme.typography.body1
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(Modifier.height(32.dp))
                     SignInWithGoogleButton(
@@ -102,31 +102,30 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            elevation = 10.dp,
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
                     text = "Used libraries",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
                     text = "AndroidX bundle",
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = "Firebase",
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = "Giphy",
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = "Timber",
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }

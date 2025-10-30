@@ -1,9 +1,8 @@
-package tech.svehla.gratitudejournal.presentation.main
+package tech.svehla.gratitudejournal.core.presentation
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import javax.inject.Inject
 

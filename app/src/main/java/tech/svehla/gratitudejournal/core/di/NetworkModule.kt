@@ -9,7 +9,6 @@ import tech.svehla.gratitudejournal.core.data.remote.ApiService
 import tech.svehla.gratitudejournal.core.data.remote.AuthService
 import tech.svehla.gratitudejournal.core.data.remote.implementation.AuthServiceImpl
 import tech.svehla.gratitudejournal.core.data.remote.implementation.FirestoreServiceImpl
-import tech.svehla.gratitudejournal.core.data.remote.implementation.KtorApiServiceImpl
 import tech.svehla.gratitudejournal.core.data.remote.util.ktorHttpClient
 import javax.inject.Singleton
 

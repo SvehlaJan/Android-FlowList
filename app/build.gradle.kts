@@ -23,9 +23,9 @@ android {
 
     defaultConfig {
         applicationId = "tech.svehla.gratitudejournal"
-        compileSdk = 33
+        compileSdk = 34
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
 
@@ -110,11 +110,11 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packagingOptions {
+    packaging {
         resources {
-            exclude("/META-INF/{AL2.0,LGPL2.1}")
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
@@ -126,8 +126,9 @@ kapt {
 
 dependencies {
     implementation(libs.androidx.corektx)
+    implementation(libs.androidx.activity)
     implementation(libs.compose.ui)
-    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
     implementation(libs.compose.activity)
     implementation(libs.compose.navigation)
     debugImplementation(libs.compose.toolingpreview)
@@ -153,8 +154,13 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // network
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.serialization)
+//    implementation(libs.ktor.client.android)
+//    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+//    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.logging)
 
     // logging

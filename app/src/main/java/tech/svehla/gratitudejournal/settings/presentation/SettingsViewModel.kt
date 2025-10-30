@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import tech.svehla.gratitudejournal.settings.domain.CurrentUserUseCase
 import tech.svehla.gratitudejournal.settings.domain.SignInWithGoogleUseCase
 import tech.svehla.gratitudejournal.settings.domain.SignOutUseCase
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,6 +48,7 @@ class SettingsViewModel @Inject constructor(
                 }
             }
         } catch (e: ApiException) {
+            Timber.e(e, "Google sign in failed")
             setSignInErrorMessage("Google sign in failed")
         }
     }
