@@ -25,7 +25,7 @@ import javax.inject.Inject
 class DetailViewModel @Inject constructor(
     private val getDetailUseCase: GetDetailUseCase,
     private val saveEntryUseCase: SaveEntryUseCase,
-    @ApplicationScope private val externalScope: CoroutineScope,
+    @param:ApplicationScope private val externalScope: CoroutineScope,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 

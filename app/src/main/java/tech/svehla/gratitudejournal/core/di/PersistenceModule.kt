@@ -24,7 +24,7 @@ object PersistenceModule {
         AppDatabase::class.java,
         application.getString(R.string.database)
       )
-      .fallbackToDestructiveMigration()
+      .fallbackToDestructiveMigration(dropAllTables = false)
       .build()
   }
 

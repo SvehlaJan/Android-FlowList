@@ -1,16 +1,9 @@
 plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlinserialization) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.google.services) apply false
     alias(libs.plugins.dependencyanalysis)
-    alias(libs.plugins.kotlinserialization)
-}
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath(libs.android.gradle.plugin)
-        classpath(libs.kotlin.gradle.plugin)
-        classpath(libs.hilt.gradle.plugin)
-        classpath(libs.google.services)
-    }
 }

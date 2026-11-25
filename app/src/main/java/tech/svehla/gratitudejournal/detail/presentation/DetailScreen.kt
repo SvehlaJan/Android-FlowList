@@ -4,7 +4,6 @@ import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -20,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -30,12 +30,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
+import coil3.ImageLoader
+import coil3.compose.rememberAsyncImagePainter
+import coil3.gif.AnimatedImageDecoder
+import coil3.gif.GifDecoder
 import tech.svehla.gratitudejournal.core.presentation.model.JournalEntryVO
 import tech.svehla.gratitudejournal.core.presentation.ui.components.ErrorScreen
 import tech.svehla.gratitudejournal.core.presentation.ui.components.GiphyPicker
@@ -166,26 +166,27 @@ fun DetailScreenContent(
         imeAction = ImeAction.Next
     )
     val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context).components {
-        if (SDK_INT >= 28) {
-            add(ImageDecoderDecoder.Factory())
-        } else {
-            add(GifDecoder.Factory())
-        }
-    }.build()
+    val imageLoader = remember(context) {
+        ImageLoader.Builder(context).components {
+            if (SDK_INT >= 28) {
+                add(AnimatedImageDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }.build()
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp),
     ) {
-        ClickableText(
-            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
-            text = AnnotatedString(journalEntry.formattedDate()),
+        Text(
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 16.dp)
+                .clickable { onUiAction(UIAction.DateClicked) },
+            text = journalEntry.formattedDate(),
             style = MaterialTheme.typography.headlineMedium,
-            onClick = {
-                onUiAction(UIAction.DateClicked)
-            },
         )
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
