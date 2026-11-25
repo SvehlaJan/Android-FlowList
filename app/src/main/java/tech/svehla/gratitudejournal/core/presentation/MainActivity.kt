@@ -3,6 +3,7 @@ package tech.svehla.gratitudejournal.core.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import com.giphy.sdk.ui.Giphy
 import dagger.hilt.android.AndroidEntryPoint
 import tech.svehla.gratitudejournal.BuildConfig
@@ -11,6 +12,7 @@ import tech.svehla.gratitudejournal.core.presentation.ui.theme.GratitudeJournalT
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         Giphy.configure(this, BuildConfig.GIPHY_API_KEY)
