@@ -21,9 +21,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,10 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import tech.svehla.gratitudejournal.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -116,7 +115,7 @@ fun NumberPicker(
 
         val arrowColor = MaterialTheme.colorScheme.onBackground
 
-        Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Up", tint = arrowColor)
+        Icon(painterResource(R.drawable.keyboard_arrow_up), contentDescription = "Up", tint = arrowColor)
 
         Spacer(modifier = Modifier.height(spacing))
 
@@ -149,7 +148,7 @@ fun NumberPicker(
 
         Spacer(modifier = Modifier.height(spacing))
 
-        Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Down", tint = arrowColor)
+        Icon(painterResource(R.drawable.keyboard_arrow_down), contentDescription = "Down", tint = arrowColor)
     }
 }
 

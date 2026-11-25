@@ -1,6 +1,9 @@
 package tech.svehla.gratitudejournal.core.presentation.ui.components
 
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
+import android.os.Build
 import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -73,7 +76,13 @@ fun GiphyPicker(
                             val shape =
                                 if (position % 2 == 0) GiphyLoadingDrawable.Shape.Rect else GiphyLoadingDrawable.Shape.Circle
                             val drawable = GiphyLoadingDrawable(shape)
-                            drawable.setColorFilter(getPlaceholderColor(), PorterDuff.Mode.SRC_ATOP)
+                            val color = getPlaceholderColor()
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
+                            } else {
+                                @Suppress("DEPRECATION")
+                                drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+                            }
                             return drawable
                         }
                     }

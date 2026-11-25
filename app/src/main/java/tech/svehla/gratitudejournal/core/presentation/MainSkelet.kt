@@ -1,13 +1,9 @@
 package tech.svehla.gratitudejournal.core.presentation
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,7 +15,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -70,18 +66,16 @@ fun MainScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
-    navController: NavController,
-    title: String,
-    modifier: Modifier = Modifier,
-    showBackButton: Boolean = false
+    navController: NavController, title: String, modifier: Modifier = Modifier, showBackButton: Boolean = false
 ) {
-    TopAppBar(title = { Text(title) }, navigationIcon = {
-        if (showBackButton) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+    TopAppBar(
+        title = { Text(title) }, navigationIcon = {
+            if (showBackButton) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(painterResource(R.drawable.arrow_back), contentDescription = "Back")
+                }
             }
-        }
-    }, modifier = modifier
+        }, modifier = modifier
     )
 }
 
@@ -94,7 +88,7 @@ fun AppBottomBar(
             NavigationBarItem(
                 icon = {
                     Icon(
-                        screen.icon, contentDescription = stringResource(screen.resourceId)
+                        painterResource(screen.icon), contentDescription = stringResource(screen.resourceId)
                     )
                 },
                 label = { Text(stringResource(screen.resourceId)) },
@@ -127,8 +121,7 @@ fun AppBottomBar(
 
 @Composable
 fun AppNavHost(
-    navController: NavHostController,
-    innerPadding: PaddingValues = PaddingValues(top = 16.dp, bottom = 16.dp)
+    navController: NavHostController, innerPadding: PaddingValues = PaddingValues(top = 16.dp, bottom = 16.dp)
 ) {
 
     NavHost(
@@ -152,8 +145,7 @@ fun AppNavHost(
                 defaultValue = LocalDate.now().toString()
             }),
         ) { backStackEntry ->
-            val date =
-                backStackEntry.arguments?.getString(NavRoute.Detail.argument0) ?: return@composable
+            val date = backStackEntry.arguments?.getString(NavRoute.Detail.argument0) ?: return@composable
 
             DetailScreenRoute(date = date, onBackPressed = {
                 navController.navigateUp()
@@ -165,9 +157,9 @@ fun AppNavHost(
     }
 }
 
-sealed class NavRoute(val route: String, @StringRes val resourceId: Int, val icon: ImageVector) {
-    data object History : NavRoute("history", R.string.menu_history, Icons.AutoMirrored.Filled.List)
-    data object Detail : NavRoute("detail", R.string.menu_journal, Icons.Filled.Add) {
+sealed class NavRoute(val route: String, @param:StringRes val resourceId: Int, @param:DrawableRes val icon: Int) {
+    data object History : NavRoute("history", R.string.menu_history, R.drawable.list)
+    data object Detail : NavRoute("detail", R.string.menu_journal, R.drawable.add) {
         const val routeWithArgument: String = "detail/{date}"
         const val argument0: String = "date"
         fun constructRoute(date: String): String {
@@ -175,5 +167,5 @@ sealed class NavRoute(val route: String, @StringRes val resourceId: Int, val ico
         }
     }
 
-    data object Settings : NavRoute("settings", R.string.menu_settings, Icons.Filled.Settings)
+    data object Settings : NavRoute("settings", R.string.menu_settings, R.drawable.settings)
 }
