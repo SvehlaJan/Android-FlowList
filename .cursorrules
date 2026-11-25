@@ -1,0 +1,12 @@
+# Project meta and workflow rules for Cursor
+
+- Always read `.cursor/PROJECT_ANALYSIS.md` at the start of a session.
+- Keep `.cursor/PROJECT_ANALYSIS.md` up to date whenever architecture/deps/flows change.
+- Log every significant change in `.cursor/CHANGELOG.md` with a dated entry.
+- Prefer updating shared docs in-repo (not ephemeral notes) so they’re visible in git history.
+- When changing networking/auth/build config, verify entries are reflected in both files.
+
+# Editor hygiene
+- Do not commit secrets; ensure `local.properties` holds `webClientId` and `giphyApiKey`.
+- Avoid widening cleartext traffic; prefer HTTPS or scoped network security config.
+- For Ktor, externalize base URLs via BuildConfig and use `DefaultRequest` for headers.
